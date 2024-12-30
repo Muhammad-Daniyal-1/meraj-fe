@@ -23,6 +23,7 @@ const links = [
   { name: "Tickets", href: "/dashboard/tickets", icon: TicketIcon },
   { name: "Providers", href: "/dashboard/providers", icon: UserGroupIcon },
   { name: "Agents", href: "/dashboard/agents", icon: UserGroupIcon },
+  { name: "Users", href: "/dashboard/users", icon: UserGroupIcon },
 ];
 
 export default function NavLinks() {

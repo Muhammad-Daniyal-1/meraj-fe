@@ -1,7 +1,7 @@
 import Image from "next/image";
 // import { UpdateProvider, DeleteProvider } from "@/app/ui/providers/buttons";
-import ProviderStatus from "@/app/ui/providers/status";
-import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
+import ProviderStatus from "@/ui/providers/status";
+import { formatDateToLocal, formatCurrency } from "@/lib/utils";
 import { UpdateProvider, DeleteProvider } from "./buttons";
 // import { fetchFilteredProviders } from "@/app/lib/data";
 

@@ -1,6 +1,5 @@
 import Form from "@/ui/providers/create-form";
 import Breadcrumbs from "@/ui/providers/breadcrumbs";
-// import { fetchCustomers } from "@/lib/data";
 
 import { Metadata } from "next";
 
@@ -12,8 +11,6 @@ export const generateMetadata = (): Metadata => {
 };
 
 export default async function Page() {
-  // const customers = await fetchCustomers();
-
   return (
     <main>
       <Breadcrumbs
