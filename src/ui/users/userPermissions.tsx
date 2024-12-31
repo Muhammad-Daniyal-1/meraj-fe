@@ -14,7 +14,7 @@ interface UserPermissionsProps {
 
 const UserPermissions = ({ permissions }: UserPermissionsProps) => {
   return (
-    <div>
+    <div className="flex flex-wrap gap-2">
       {permissions.map((permission, index) => {
         // Extract the action (e.g., "Add", "Delete") from the permission string
         const action = permission.split(" ")[0] || ""; // Get the first word
@@ -25,7 +25,7 @@ const UserPermissions = ({ permissions }: UserPermissionsProps) => {
         return (
           <span
             key={index}
-            className={`inline-block rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2 ${pillColor}`}
+            className={`inline-block rounded-full px-3 py-1 text-sm font-semibold mr-1 ${pillColor}`}
           >
             {permission}
           </span>

@@ -8,12 +8,33 @@ export const userApi = baseApi.injectEndpoints({
         method: "POST",
         body: user,
       }),
+      invalidatesTags: ["Users"],
     }),
     getUsers: builder.query({
       query: (params = {}) => {
         const queryParams = new URLSearchParams(params).toString();
         return `/users/get-all${queryParams ? `?${queryParams}` : ""}`;
       },
+      providesTags: ["Users"],
+    }),
+    getUser: builder.query({
+      query: (id) => `/users/get-user/${id}`,
+      providesTags: ["Users"],
+    }),
+    updateUser: builder.mutation({
+      query: (user) => ({
+        url: `/users/update/${user._id}`,
+        method: "PATCH",
+        body: user,
+      }),
+      invalidatesTags: ["Users"],
+    }),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `/users/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Users"],
     }),
     login: builder.mutation({
       query: (user) => ({
@@ -34,6 +55,9 @@ export const userApi = baseApi.injectEndpoints({
 export const {
   useCreateUserMutation,
   useGetUsersQuery,
+  useGetUserQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
   useLoginMutation,
   useLogoutMutation,
 } = userApi;

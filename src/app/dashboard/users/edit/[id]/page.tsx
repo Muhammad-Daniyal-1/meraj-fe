@@ -1,12 +1,10 @@
-import Form from "@/ui/users/create-form";
+import UserEditForm from "@/ui/users/edit-form";
 import Breadcrumbs from "@/ui/breadcrumbs";
-import { fetchInvoiceById, fetchCustomers } from "@/lib/data";
-import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
 export const generateMetadata = (): Metadata => {
   return {
-    title: "Edit User | Meraj",
+    title: "Edit User",
     description: "Edit User specific to this page.",
   };
 };
@@ -27,7 +25,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           },
         ]}
       />
-      <Form />
+      <UserEditForm id={id} />
     </main>
   );
 }

@@ -1,7 +1,10 @@
+"use client";
+
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-// import { deleteInvoice } from "@/app/lib/actions";
-
+import { useDeleteUserMutation } from "@/lib/api/userApi";
+import ConfirmationModal from "../confirmationModal";
+import { useState } from "react";
 export const CreateUser = () => {
   return (
     <Link
@@ -17,7 +20,7 @@ export const CreateUser = () => {
 export function UpdateUser({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/users/${id}/edit`}
+      href={`/dashboard/users/edit/${id}`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -26,13 +29,28 @@ export function UpdateUser({ id }: { id: string }) {
 }
 
 export function DeleteUser({ id }: { id: string }) {
-  // const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+  const [deleteUser, { isLoading }] = useDeleteUserMutation();
+  const [isOpen, setIsOpen] = useState(false);
+  const handleDelete = async () => {
+    await deleteUser(id);
+  };
+
   return (
-    <form>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+    <>
+      <button
+        type="submit"
+        className="rounded-md border p-2 hover:bg-red-500 hover:text-white"
+        onClick={() => setIsOpen(true)}
+        disabled={isLoading}
+      >
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-4" />
       </button>
-    </form>
+      <ConfirmationModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={handleDelete}
+      />
+    </>
   );
 }

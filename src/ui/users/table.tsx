@@ -101,10 +101,10 @@ export default function UsersTable({
                         }
                       )}
                     >
-                      {user.isActive ? "Active" : "Inactive"}
+                      {user.isActive ? "Active" : "Blocked"}
                     </span>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="whitespace-nowrap px-3 py-3 w-1/2">
                     <UserPermissions permissions={user.permissions} />
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">

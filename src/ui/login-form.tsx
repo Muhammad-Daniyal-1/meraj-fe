@@ -23,7 +23,7 @@ export default function LoginForm() {
     resolver: zodResolver(LoginSchema),
   });
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading, error }] = useLoginMutation();
   const watchedUsername = watch("username");
   const watchedPassword = watch("password");
 
@@ -37,6 +37,7 @@ export default function LoginForm() {
       toast.success("Login successful");
       router.push("/dashboard");
     } catch (err: any) {
+      toast.error(err.data.error || "Login failed");
       console.error("Error logging in:", err);
     }
   };

@@ -11,7 +11,17 @@ export const UserSchema = z.object({
   permissions: z.array(z.string()).optional(),
 });
 
+export const UserUpdateSchema = UserSchema.omit({ password: true }).extend({
+  password: z
+    .union([
+      z.string().min(6, "Password must be at least 6 characters long."),
+      z.string().length(0),
+    ])
+    .optional(),
+});
+
 export type UserFormData = z.infer<typeof UserSchema>;
+export type UserUpdateFormData = z.infer<typeof UserUpdateSchema>;
 
 export const LoginSchema = z.object({
   username: z.string(),
