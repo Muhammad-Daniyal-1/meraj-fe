@@ -1,7 +1,7 @@
 import React from "react";
 
 const actionColors: Record<string, string> = {
-  Add: "bg-green-100 text-green-800",
+  Create: "bg-green-100 text-green-800",
   Delete: "bg-red-100 text-red-800",
   Edit: "bg-orange-100 text-orange-800",
   Update: "bg-yellow-100 text-yellow-800",

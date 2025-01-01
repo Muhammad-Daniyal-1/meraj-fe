@@ -23,7 +23,7 @@ export const permissions = [
   { label: "Delete Agent", value: "Delete Agent" },
   { label: "Edit Agent", value: "Edit Agent" },
   { label: "Read Agent", value: "Read Agent" },
-  { label: "Add User", value: "Add User" },
+  { label: "Create User", value: "Add User" },
   { label: "Delete User", value: "Delete User" },
   { label: "Edit User", value: "Edit User" },
   { label: "Read User", value: "Read User" },
@@ -51,7 +51,7 @@ export default function UserEditForm({ id }: { id: string }) {
         password: "",
         role: data.user.role || "User",
         // @ts-ignore
-        isActive: data?.user.isActive === true ? "true" : "false",
+        status: data?.user.status === true ? "true" : "false",
         permissions: data?.user.permissions || [],
       });
     }
@@ -63,7 +63,7 @@ export default function UserEditForm({ id }: { id: string }) {
       toast.success("User updated successfully!");
       router.push("/dashboard/users");
     } catch (err: any) {
-      console.error("Error updating user:", err);
+      console.log("Error updating user:", err);
       toast.error(err?.data?.message || "Failed to update user.");
     }
   };
@@ -153,18 +153,15 @@ export default function UserEditForm({ id }: { id: string }) {
             )}
           </div>
 
-          {/* Is Active */}
+          {/* Status */}
           <div className="md:col-span-2">
-            <label
-              htmlFor="isActive"
-              className="mb-2 block text-sm font-medium"
-            >
-              Is Active
+            <label htmlFor="status" className="mb-2 block text-sm font-medium">
+              Status
             </label>
             <div className="flex gap-4">
               <label className="flex items-center gap-2">
                 <input
-                  {...register("isActive")}
+                  {...register("status")}
                   type="radio"
                   value="true"
                   className="w-4 h-4"
@@ -173,7 +170,7 @@ export default function UserEditForm({ id }: { id: string }) {
               </label>
               <label className="flex items-center gap-2">
                 <input
-                  {...register("isActive")}
+                  {...register("status")}
                   type="radio"
                   value="false"
                   className="w-4 h-4"
@@ -181,9 +178,9 @@ export default function UserEditForm({ id }: { id: string }) {
                 Block
               </label>
             </div>
-            {errors.isActive && (
+            {errors.status && (
               <p className="mt-2 text-sm text-red-500">
-                {errors.isActive.message}
+                {errors.status.message}
               </p>
             )}
           </div>

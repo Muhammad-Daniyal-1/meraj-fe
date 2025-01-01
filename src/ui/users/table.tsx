@@ -1,13 +1,10 @@
 "use client";
 
-import Image from "next/image";
-// import { UpdateProvider, DeleteProvider } from "@/app/ui/providers/buttons";
-import ProviderStatus from "@/ui/providers/status";
-import { formatDateToLocal, formatCurrency } from "@/lib/utils";
-import { UpdateUser, DeleteUser } from "./buttons";
+import { useState, useEffect } from "react";
+import clsx from "clsx";
 import { useGetUsersQuery } from "@/lib/api/userApi";
 import Pagination from "../pagination";
-import clsx from "clsx";
+import { UpdateUser, DeleteUser } from "./buttons";
 import UserPermissions from "./userPermissions";
 
 export default function UsersTable({
@@ -17,11 +14,38 @@ export default function UsersTable({
   query: string;
   currentPage: number;
 }) {
-  const { data, isLoading } = useGetUsersQuery({
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 3000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [query]);
+
+  useEffect(() => {
+    if (debouncedQuery.length >= 2 || debouncedQuery === "") {
+      setSearchQuery(debouncedQuery);
+    }
+  }, [debouncedQuery]);
+
+  const { data, isLoading, isError } = useGetUsersQuery({
     page: currentPage,
     limit: 20,
-    search: query,
+    search: searchQuery,
   });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading users. Please try again later.</div>;
+  }
 
   return (
     <div className="mt-6 flow-root">
@@ -96,12 +120,12 @@ export default function UsersTable({
                       className={clsx(
                         "inline-flex items-center rounded-full px-2 py-1 text-xs",
                         {
-                          "bg-green-500 text-white": user.isActive,
-                          "bg-red-500 text-white": !user.isActive,
+                          "bg-green-500 text-white": user.status,
+                          "bg-red-500 text-white": !user.status,
                         }
                       )}
                     >
-                      {user.isActive ? "Active" : "Blocked"}
+                      {user.status ? "Active" : "Blocked"}
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 w-1/2">

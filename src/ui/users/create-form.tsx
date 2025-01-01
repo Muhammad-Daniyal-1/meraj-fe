@@ -21,7 +21,7 @@ export const permissions = [
   { label: "Delete Agent", value: "Delete Agent" },
   { label: "Edit Agent", value: "Edit Agent" },
   { label: "Read Agent", value: "Read Agent" },
-  { label: "Add User", value: "Add User" },
+  { label: "Create User", value: "Add User" },
   { label: "Delete User", value: "Delete User" },
   { label: "Edit User", value: "Edit User" },
   { label: "Read User", value: "Read User" },
@@ -45,7 +45,7 @@ export default function UserForm() {
       toast.success("User added successfully!");
       reset();
     } catch (err: any) {
-      console.error("Error adding user:", err);
+      console.log("Error adding user:", err);
       toast.error(err?.data?.message || "Failed to add user.");
     }
   };
@@ -131,18 +131,15 @@ export default function UserForm() {
             )}
           </div>
 
-          {/* Is Active */}
+          {/* Status */}
           <div className="md:col-span-2">
-            <label
-              htmlFor="isActive"
-              className="mb-2 block text-sm font-medium"
-            >
-              Is Active
+            <label htmlFor="status" className="mb-2 block text-sm font-medium">
+              Status
             </label>
             <div className="flex gap-4">
               <label className="flex items-center gap-2">
                 <input
-                  {...register("isActive")}
+                  {...register("status")}
                   type="radio"
                   value="true"
                   defaultChecked
@@ -152,7 +149,7 @@ export default function UserForm() {
               </label>
               <label className="flex items-center gap-2">
                 <input
-                  {...register("isActive")}
+                  {...register("status")}
                   type="radio"
                   value="false"
                   className="w-4 h-4"
@@ -160,9 +157,9 @@ export default function UserForm() {
                 Block
               </label>
             </div>
-            {errors.isActive && (
+            {errors.status && (
               <p className="mt-2 text-sm text-red-500">
-                {errors.isActive.message}
+                {errors.status.message}
               </p>
             )}
           </div>
