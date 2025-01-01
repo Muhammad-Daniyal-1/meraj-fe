@@ -1,6 +1,11 @@
+"use client";
+
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { deleteInvoice } from "@/app/lib/actions";
+import { useDeleteAgentMutation } from "@/lib/api/agentApi";
+import ConfirmationModal from "../confirmationModal";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export const CreateAgent = () => {
   return (
@@ -17,7 +22,7 @@ export const CreateAgent = () => {
 export function UpdateAgent({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/agents/${id}/edit`}
+      href={`/dashboard/agents/edit/${id}`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -26,13 +31,34 @@ export function UpdateAgent({ id }: { id: string }) {
 }
 
 export function DeleteAgent({ id }: { id: string }) {
-  // const deleteAgentWithId = deleteAgent.bind(null, id);
+  const [deleteAgent, { isLoading }] = useDeleteAgentMutation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      await deleteAgent(id).unwrap();
+      setIsOpen(false);
+      toast.success("Agent deleted successfully!");
+    } catch {
+      toast.error("Failed to delete agent.");
+    }
+  };
+
   return (
-    <form>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+    <>
+      <button
+        className="rounded-md border p-2 hover:bg-gray-100"
+        onClick={() => setIsOpen(true)}
+        disabled={isLoading}
+      >
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-4" />
       </button>
-    </form>
+      <ConfirmationModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={handleDelete}
+      />
+    </>
   );
 }

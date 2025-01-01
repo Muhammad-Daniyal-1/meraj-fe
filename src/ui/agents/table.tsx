@@ -1,18 +1,56 @@
-import Image from "next/image";
-// import { UpdateProvider, DeleteProvider } from "@/app/ui/providers/buttons";
-import ProviderStatus from "@/app/ui/providers/status";
-import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
-import { UpdateAgent, DeleteAgent } from "./buttons";
-// import { fetchFilteredProviders } from "@/app/lib/data";
+"use client";
 
-export default async function AgentsTable({
+import { useState, useEffect } from "react";
+import { useGetAgentsQuery } from "@/lib/api/agentApi";
+import Pagination from "../pagination";
+import { UpdateAgent, DeleteAgent } from "./buttons";
+
+export default function AgentsTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  // const providers = await fetchFilteredProviders(query, currentPage);
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 3000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [query]);
+
+  useEffect(() => {
+    if (debouncedQuery.length >= 2 || debouncedQuery === "") {
+      setSearchQuery(debouncedQuery);
+    }
+  }, [debouncedQuery]);
+
+  const { data, isLoading, error } = useGetAgentsQuery({
+    page: currentPage,
+    limit: 20,
+    search: searchQuery,
+  });
+
+  if (isLoading)
+    return <div className="mt-6 text-center text-gray-500">Loading...</div>;
+
+  if (error)
+    return (
+      <div className="mt-6 text-center text-gray-500">
+        Error loading agents. Please try again later.
+      </div>
+    );
+
+  if (data?.agents?.length === 0)
+    return (
+      <div className="mt-6 text-center text-gray-500">No agents found.</div>
+    );
 
   return (
     <div className="mt-6 flow-root">
@@ -79,64 +117,44 @@ export default async function AgentsTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              <tr className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-                <td className="whitespace-nowrap py-3 pl-6 pr-3">1</td>
-                <td className="whitespace-nowrap px-3 py-3">Agent 1</td>
-                <td className="whitespace-nowrap px-3 py-3">
-                  agent1@example.com
-                </td>
-                <td className="whitespace-nowrap px-3 py-3">1234567890</td>
-                <td className=" px-3 py-3">
-                  Address 1, City 1, State 1, 12345
-                </td>
-                <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                  <div className="flex justify-end gap-3">
-                    <UpdateAgent id="1" />
-                    <DeleteAgent id="1" />
-                  </div>
-                </td>
-              </tr>
-              {/* {invoices?.map((invoice) => (
-                <tr
-                  key={invoice.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(invoice.amount)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(invoice.date)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.status} />
-                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
-                    </div>
-                  </td>
-                </tr>
-              ))} */}
+              {data?.agents?.length > 0 &&
+                data?.agents?.map((agent: any) => (
+                  <tr
+                    key={agent.id}
+                    className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                  >
+                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      <p>{agent.id}</p>
+                    </td>
+                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      <p>{agent.name}</p>
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      {agent.email}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3">
+                      {agent.phone}
+                    </td>
+                    <td className="whitespace-wrap px-3 py-3">
+                      {agent.address}
+                    </td>
+                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      <div className="flex justify-end gap-3">
+                        <UpdateAgent id={agent._id} />
+                        <DeleteAgent id={agent._id} />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
       </div>
+      {data?.pagination?.totalPages && data?.pagination?.totalPages > 1 && (
+        <div className="mt-5 flex w-full justify-center">
+          <Pagination totalPages={data?.pagination?.totalPages || 20} />
+        </div>
+      )}
     </div>
   );
 }

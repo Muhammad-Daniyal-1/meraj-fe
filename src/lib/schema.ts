@@ -31,3 +31,13 @@ export const LoginSchema = z.object({
 });
 
 export type LoginFormData = z.infer<typeof LoginSchema>;
+
+export const AgentSchema = z.object({
+  id: z.string().nonempty("ID is required."),
+  name: z.string().nonempty("Name is required."),
+  email: z.string().email("Invalid email address."),
+  phone: z.string().nonempty("Phone number is required."),
+  address: z.string().nonempty("Address is required."),
+});
+
+export type AgentFormData = z.infer<typeof AgentSchema>;

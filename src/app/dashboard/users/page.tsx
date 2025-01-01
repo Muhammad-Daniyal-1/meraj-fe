@@ -1,11 +1,7 @@
-import Pagination from "@/ui/pagination";
 import Search from "@/ui/search";
 import Table from "@/ui/users/table";
 import { CreateUser } from "@/ui/users/buttons";
 import { lusitana } from "@/ui/fonts";
-import { InvoicesTableSkeleton } from "@/ui/skeletons";
-import { Suspense } from "react";
-import { fetchInvoicesPages } from "@/lib/data";
 
 import { Metadata } from "next";
 
@@ -35,9 +31,7 @@ export default async function Page(props: {
         <Search placeholder="Search users..." />
         <CreateUser />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
-      </Suspense>
+      <Table query={query} currentPage={currentPage} />
     </div>
   );
 }

@@ -1,6 +1,5 @@
-import Form from "@/ui/agents/create-form";
-import Breadcrumbs from "@/ui/agents/breadcrumbs";
-// import { fetchCustomers } from "@/lib/data";
+import CreateAgentForm from "@/ui/agents/create-form";
+import Breadcrumbs from "@/ui/breadcrumbs";
 
 import { Metadata } from "next";
 
@@ -12,8 +11,6 @@ export const generateMetadata = (): Metadata => {
 };
 
 export default async function Page() {
-  // const customers = await fetchCustomers();
-
   return (
     <main>
       <Breadcrumbs
@@ -26,7 +23,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form />
+      <CreateAgentForm />
     </main>
   );
 }

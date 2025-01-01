@@ -40,12 +40,21 @@ export default function UsersTable({
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="mt-6 text-center text-gray-500">Loading...</div>;
   }
 
   if (isError) {
-    return <div>Error loading users. Please try again later.</div>;
+    return (
+      <div className="mt-6 text-center text-gray-500">
+        Error loading users. Please try again later.
+      </div>
+    );
   }
+
+  if (data?.agents?.length === 0)
+    return (
+      <div className="mt-6 text-center text-gray-500">No users found.</div>
+    );
 
   return (
     <div className="mt-6 flow-root">

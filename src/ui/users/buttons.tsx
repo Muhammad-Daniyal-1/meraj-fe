@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useDeleteUserMutation } from "@/lib/api/userApi";
 import ConfirmationModal from "../confirmationModal";
 import { useState } from "react";
+import { toast } from "react-toastify";
+
 export const CreateUser = () => {
   return (
     <Link
@@ -32,7 +34,13 @@ export function DeleteUser({ id }: { id: string }) {
   const [deleteUser, { isLoading }] = useDeleteUserMutation();
   const [isOpen, setIsOpen] = useState(false);
   const handleDelete = async () => {
-    await deleteUser(id);
+    try {
+      await deleteUser(id).unwrap();
+      setIsOpen(false);
+      toast.success("User deleted successfully!");
+    } catch {
+      toast.error("Failed to delete user.");
+    }
   };
 
   return (
