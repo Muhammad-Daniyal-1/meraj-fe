@@ -1,139 +1,133 @@
 "use client";
 
-import { useActionState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Button } from "@/ui/button";
-// import { createInvoice, State } from "@/lib/actions";
+import { ProviderFormData, ProviderSchema } from "@/lib/schema";
+import { useCreateProviderMutation } from "@/lib/api/providerApi";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-export default function ThemedTicketForm() {
-  // Set an initial empty state for handling errors or messages
-  // const initialState: State = { message: null, errors: {} };
-  // const [state, formAction] = useActionState(createInvoice, initialState);
+export default function CreateProviderForm() {
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ProviderFormData>({
+    resolver: zodResolver(ProviderSchema),
+  });
+
+  const [createProvider, { isLoading }] = useCreateProviderMutation();
+
+  const onSubmit = async (data: ProviderFormData) => {
+    try {
+      await createProvider(data).unwrap();
+      toast.success("Provider added successfully!");
+      router.push("/dashboard/providers");
+      reset();
+    } catch (err: any) {
+      console.log("Error adding provider:", err);
+      toast.error(err?.data?.message || "Failed to add provider.");
+    }
+  };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* TICKET NUMBER */}
+          {/* Provider ID */}
           <div>
-            <label
-              htmlFor="providerId"
-              className="mb-2 block text-sm font-medium"
-            >
+            <label htmlFor="id" className="mb-2 block text-sm font-medium">
               Provider ID
             </label>
             <input
-              id="providerId"
-              name="providerId"
+              id="id"
+              {...register("id")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="providerId-error"
             />
-            <div id="providerId-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.providerId &&
-                state.errors.providerId.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.id && (
+              <p className="mt-2 text-sm text-red-500">{errors.id.message}</p>
+            )}
           </div>
 
-          {/* CLIENT NAME */}
+          {/* Provider Name */}
           <div>
-            <label
-              htmlFor="providerName"
-              className="mb-2 block text-sm font-medium"
-            >
+            <label htmlFor="name" className="mb-2 block text-sm font-medium">
               Provider Name
             </label>
             <input
-              id="providerName"
-              name="providerName"
+              id="name"
+              {...register("name")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="providerName-error"
             />
-            <div id="providerName-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.providerName &&
-                state.errors.providerName.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.name && (
+              <p className="mt-2 text-sm text-red-500">{errors.name.message}</p>
+            )}
           </div>
 
-          {/* EMAIL */}
+          {/* Email */}
           <div>
             <label htmlFor="email" className="mb-2 block text-sm font-medium">
               Email
             </label>
             <input
               id="email"
-              name="email"
+              {...register("email")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="email-error"
             />
-            <div id="email-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.email &&
-                state.errors.email.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.email && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
-          {/* CONTACT */}
+          {/* Contact */}
           <div>
-            <label htmlFor="contact" className="mb-2 block text-sm font-medium">
-              Contact
+            <label htmlFor="phone" className="mb-2 block text-sm font-medium">
+              Phone
             </label>
             <input
-              id="contact"
-              name="contact"
+              id="phone"
+              {...register("phone")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="contact-error"
             />
-            <div id="contact-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.contact &&
-                state.errors.contact.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.phone && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.phone.message}
+              </p>
+            )}
           </div>
 
-          {/* ADDRESS */}
+          {/* Address */}
           <div className="md:col-span-2">
             <label htmlFor="address" className="mb-2 block text-sm font-medium">
               Address
             </label>
             <input
               id="address"
-              name="address"
+              {...register("address")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="address-error"
             />
-            <div id="address-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.address &&
-                state.errors.address.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.address && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.address.message}
+              </p>
+            )}
           </div>
         </div>
       </div>
 
-      {/* FORM ACTION BUTTONS */}
+      {/* Form Action Buttons */}
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/dashboard"
@@ -141,7 +135,9 @@ export default function ThemedTicketForm() {
         >
           Cancel
         </Link>
-        <Button type="submit">Add Provider</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Submitting..." : "Add Provider"}
+        </Button>
       </div>
     </form>
   );

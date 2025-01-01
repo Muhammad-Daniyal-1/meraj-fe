@@ -1,11 +1,7 @@
-import Pagination from "@/ui/providers/pagination";
 import Search from "@/ui/search";
 import Table from "@/ui/providers/table";
 import { CreateProvider } from "@/ui/providers/buttons";
 import { lusitana } from "@/ui/fonts";
-import { InvoicesTableSkeleton } from "@/ui/skeletons";
-import { Suspense } from "react";
-import { fetchInvoicesPages } from "@/lib/data";
 
 import { Metadata } from "next";
 
@@ -25,7 +21,6 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchInvoicesPages(query);
 
   return (
     <div className="w-full">
@@ -36,12 +31,7 @@ export default async function Page(props: {
         <Search placeholder="Search providers..." />
         <CreateProvider />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
-      </Suspense>
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={6} />
-      </div>
+      <Table query={query} currentPage={currentPage} />
     </div>
   );
 }

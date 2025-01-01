@@ -1,18 +1,56 @@
-import Image from "next/image";
-// import { UpdateProvider, DeleteProvider } from "@/app/ui/providers/buttons";
-import ProviderStatus from "@/ui/providers/status";
-import { formatDateToLocal, formatCurrency } from "@/lib/utils";
-import { UpdateProvider, DeleteProvider } from "./buttons";
-// import { fetchFilteredProviders } from "@/app/lib/data";
+"use client";
 
-export default async function ProvidersTable({
+import { useState, useEffect } from "react";
+import { useGetProvidersQuery } from "@/lib/api/providerApi";
+import Pagination from "../pagination";
+import { UpdateProvider, DeleteProvider } from "./buttons";
+
+export default function ProvidersTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  // const providers = await fetchFilteredProviders(query, currentPage);
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 3000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [query]);
+
+  useEffect(() => {
+    if (debouncedQuery.length >= 2 || debouncedQuery === "") {
+      setSearchQuery(debouncedQuery);
+    }
+  }, [debouncedQuery]);
+
+  const { data, isLoading, error } = useGetProvidersQuery({
+    page: currentPage,
+    limit: 20,
+    search: searchQuery,
+  });
+
+  if (isLoading)
+    return <div className="mt-6 text-center text-gray-500">Loading...</div>;
+
+  if (error)
+    return (
+      <div className="mt-6 text-center text-gray-500">
+        Error loading providers. Please try again later.
+      </div>
+    );
+
+  if (data?.providers?.length === 0)
+    return (
+      <div className="mt-6 text-center text-gray-500">No providers found.</div>
+    );
 
   return (
     <div className="mt-6 flow-root">
@@ -79,81 +117,43 @@ export default async function ProvidersTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              <tr className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-                <td className="whitespace-nowrap py-3 pl-6 pr-3">1</td>
-                <td className="whitespace-nowrap px-3 py-3">Provider 1</td>
-                <td className="whitespace-nowrap px-3 py-3">
-                  provider1@example.com
-                </td>
-                <td className="whitespace-nowrap px-3 py-3">1234567890</td>
-                <td className=" px-3 py-3">
-                  Address 1, City 1, State 1, 12345
-                </td>
-                <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                  <div className="flex justify-end gap-3">
-                    <UpdateProvider id="1" />
-                    <DeleteProvider id="1" />
-                  </div>
-                </td>
-              </tr>
-              <tr className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-                <td className="whitespace-nowrap py-3 pl-6 pr-3">1</td>
-                <td className="whitespace-nowrap px-3 py-3">Provider 1</td>
-                <td className="whitespace-nowrap px-3 py-3">
-                  provider1@example.com
-                </td>
-                <td className="whitespace-nowrap px-3 py-3">1234567890</td>
-                <td className=" px-3 py-3">
-                  Address 1, City 1, State 1, 12345
-                </td>
-                <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                  <div className="flex justify-end gap-3">
-                    <UpdateProvider id="1" />
-                    <DeleteProvider id="1" />
-                  </div>
-                </td>
-              </tr>
-              {/* {invoices?.map((invoice) => (
+              {data?.providers?.map((provider: any) => (
                 <tr
-                  key={invoice.id}
+                  key={provider.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(invoice.amount)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(invoice.date)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.status} />
+                    <p>{provider.id}</p>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                    <p>{provider.name}</p>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {provider.email}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {provider.phone}
+                  </td>
+                  <td className="whitespace-wrap px-3 py-3">
+                    {provider.address}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
+                      <UpdateProvider id={provider._id} />
+                      <DeleteProvider id={provider._id} />
                     </div>
                   </td>
                 </tr>
-              ))} */}
+              ))}
             </tbody>
           </table>
         </div>
       </div>
+      {data?.pagination?.totalPages && data?.pagination?.totalPages > 1 && (
+        <div className="mt-5 flex w-full justify-center">
+          <Pagination totalPages={data?.pagination?.totalPages || 20} />
+        </div>
+      )}
     </div>
   );
 }

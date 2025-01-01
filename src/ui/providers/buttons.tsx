@@ -1,6 +1,11 @@
+"use client";
+
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-// import { deleteInvoice } from "@/app/lib/actions";
+import { useDeleteProviderMutation } from "@/lib/api/providerApi";
+import ConfirmationModal from "../confirmationModal";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export const CreateProvider = () => {
   return (
@@ -17,7 +22,7 @@ export const CreateProvider = () => {
 export function UpdateProvider({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/providers/${id}/edit`}
+      href={`/dashboard/providers/edit/${id}`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -26,13 +31,34 @@ export function UpdateProvider({ id }: { id: string }) {
 }
 
 export function DeleteProvider({ id }: { id: string }) {
-  // const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+  const [deleteProvider] = useDeleteProviderMutation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      await deleteProvider(id);
+      setIsOpen(false);
+      toast.success("Provider deleted successfully");
+    } catch {
+      toast.error("Failed to delete provider");
+    }
+  };
+
   return (
-    <form>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+    <>
+      <button
+        type="submit"
+        className="rounded-md border p-2 hover:bg-gray-100"
+        onClick={() => setIsOpen(true)}
+      >
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-4" />
       </button>
-    </form>
+      <ConfirmationModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={handleDelete}
+      />
+    </>
   );
 }
