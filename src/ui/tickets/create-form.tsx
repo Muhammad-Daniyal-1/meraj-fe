@@ -1,15 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
 import Link from "next/link";
 import { Button } from "@/ui/button";
-// import { createInvoice, State } from "@/lib/actions";
 
 export default function ThemedTicketForm() {
-  // Set an initial empty state for handling errors or messages
-  // const initialState: State = { message: null, errors: {} };
-  // const [state, formAction] = useActionState(createInvoice, initialState);
-
   return (
     <form>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -443,6 +437,28 @@ export default function ThemedTicketForm() {
             >
               {/* {state.errors?.paymentToProvider &&
                 state.errors.paymentToProvider.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))} */}
+            </div>
+          </div>
+
+          {/* SEGMENT */}
+          <div>
+            <label htmlFor="segment" className="mb-2 block text-sm font-medium">
+              Segment
+            </label>
+            <input
+              id="segment"
+              name="segment"
+              type="text"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
+              aria-describedby="segment-error"
+            />
+            <div id="segment-error" aria-live="polite" aria-atomic="true">
+              {/* {state.errors?.segment &&
+                state.errors.segment.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>

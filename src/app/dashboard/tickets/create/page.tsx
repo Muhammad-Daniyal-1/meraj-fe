@@ -1,6 +1,5 @@
 import Form from "@/ui/tickets/create-form";
-import Breadcrumbs from "@/ui/tickets/breadcrumbs";
-import { fetchCustomers } from "@/lib/data";
+import Breadcrumbs from "@/ui/breadcrumbs";
 
 import { Metadata } from "next";
 
@@ -12,8 +11,6 @@ export const generateMetadata = (): Metadata => {
 };
 
 export default async function Page() {
-  const customers = await fetchCustomers();
-
   return (
     <main>
       <Breadcrumbs
