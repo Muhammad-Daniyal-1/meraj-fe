@@ -1,17 +1,44 @@
-import Image from "next/image";
-// import { UpdateInvoice, DeleteInvoice } from "@/app/ui/invoices/buttons";
-// import InvoiceStatus from "@/ui/invoices/status";
-// import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
-// import { fetchFilteredInvoices } from "@/lib/data";
+"use client";
 
-export default async function InvoicesTable({
+import { useGetTicketsQuery } from "@/lib/api/ticketApi";
+import Pagination from "./pagination";
+import { useEffect } from "react";
+import { useState } from "react";
+
+export default function TicketsTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  // const invoices = await fetchFilteredInvoices(query, currentPage);
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 3000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [query]);
+
+  useEffect(() => {
+    if (debouncedQuery.length >= 2 || debouncedQuery === "") {
+      setSearchQuery(debouncedQuery);
+    }
+  }, [debouncedQuery]);
+
+  const { data, isLoading, error } = useGetTicketsQuery({
+    page: currentPage,
+    limit: 20,
+    search: searchQuery,
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error</div>;
 
   return (
     <div className="mt-6 flow-root overflow-x-auto scrollbar-visible">
@@ -233,6 +260,9 @@ export default async function InvoicesTable({
           </table>
           {/* </div> */}
         </div>
+      </div>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={2} />
       </div>
     </div>
   );

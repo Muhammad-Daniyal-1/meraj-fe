@@ -1,15 +1,54 @@
 "use client";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Button } from "@/ui/button";
+import { TicketFormData, TicketFormSchema } from "@/lib/schema";
+import { useCreateTicketMutation } from "@/lib/api/ticketApi";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useState } from "react";
 
-export default function ThemedTicketForm() {
+export default function CreateTicketForm() {
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<TicketFormData>({
+    resolver: zodResolver(TicketFormSchema),
+  });
+
+  const [createTicket, { isLoading }] = useCreateTicketMutation();
+  const [providerCost, setProviderCost] = useState(0);
+  const [consumerCost, setConsumerCost] = useState(0);
+  const [profit, setProfit] = useState(0);
+
+  useEffect(() => {
+    setProfit(consumerCost - providerCost);
+  }, [consumerCost, providerCost]);
+
+  const onSubmit = async (data: TicketFormData) => {
+    try {
+      await createTicket({ ...data, profit }).unwrap();
+      toast.success("Ticket added successfully!");
+      router.push("/dashboard/tickets");
+      reset();
+    } catch (err: any) {
+      console.error("Error adding ticket:", err);
+      toast.error(err?.data?.message || "Failed to add ticket.");
+    }
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* TICKET NUMBER */}
+          {/* Ticket Number */}
           <div>
             <label
               htmlFor="ticketNumber"
@@ -19,22 +58,18 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="ticketNumber"
-              name="ticketNumber"
+              {...register("ticketNumber")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="ticketNumber-error"
             />
-            <div id="ticketNumber-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.ticketNumber &&
-                state.errors.ticketNumber.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.ticketNumber && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.ticketNumber.message}
+              </p>
+            )}
           </div>
 
-          {/* CLIENT NAME */}
+          {/* Client Name */}
           <div>
             <label
               htmlFor="clientName"
@@ -44,22 +79,18 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="clientName"
-              name="clientName"
+              {...register("clientName")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="clientName-error"
             />
-            <div id="clientName-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.clientName &&
-                  state.errors.clientName.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
-                      {error}
-                    </p>
-                  ))} */}
-            </div>
+            {errors.clientName && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.clientName.message}
+              </p>
+            )}
           </div>
 
-          {/* PROVIDER ID */}
+          {/* Provider ID */}
           <div>
             <label
               htmlFor="providerId"
@@ -69,44 +100,36 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="providerId"
-              name="providerId"
+              {...register("providerId")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="providerId-error"
             />
-            <div id="providerId-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.providerId &&
-                state.errors.providerId.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.providerId && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.providerId.message}
+              </p>
+            )}
           </div>
 
-          {/* AGENT */}
+          {/* Agent */}
           <div>
             <label htmlFor="agent" className="mb-2 block text-sm font-medium">
               Agent
             </label>
             <input
               id="agent"
-              name="agent"
+              {...register("agent")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="agent-error"
             />
-            <div id="agent-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.agent &&
-                state.errors.agent.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.agent && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.agent.message}
+              </p>
+            )}
           </div>
 
-          {/* OPERATION_TYPE */}
+          {/* Operation Type */}
           <div>
             <label
               htmlFor="operationType"
@@ -116,23 +139,19 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="operationType"
-              name="operationType"
+              {...register("operationType")}
               type="text"
               placeholder="(e.g., Sale, Refund)"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="operationType-error"
             />
-            <div id="operationType-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.operationType &&
-                state.errors.operationType.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.operationType && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.operationType.message}
+              </p>
+            )}
           </div>
 
-          {/* ISSUE DATE */}
+          {/* Issue Date */}
           <div>
             <label
               htmlFor="issueDate"
@@ -142,22 +161,18 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="issueDate"
-              name="issueDate"
+              {...register("issueDate")}
               type="date"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="issueDate-error"
             />
-            <div id="issueDate-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.issueDate &&
-                state.errors.issueDate.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.issueDate && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.issueDate.message}
+              </p>
+            )}
           </div>
 
-          {/* DEPARTURE DATE */}
+          {/* Departure Date */}
           <div>
             <label
               htmlFor="departureDate"
@@ -167,22 +182,18 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="departureDate"
-              name="departureDate"
+              {...register("departureDate")}
               type="date"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="departureDate-error"
             />
-            <div id="departureDate-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.departureDate &&
-                state.errors.departureDate.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.departureDate && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.departureDate.message}
+              </p>
+            )}
           </div>
 
-          {/* RETURN DATE */}
+          {/* Return Date */}
           <div>
             <label
               htmlFor="returnDate"
@@ -192,22 +203,18 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="returnDate"
-              name="returnDate"
+              {...register("returnDate")}
               type="date"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="returnDate-error"
             />
-            <div id="returnDate-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.returnDate &&
-                state.errors.returnDate.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.returnDate && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.returnDate.message}
+              </p>
+            )}
           </div>
 
-          {/* DEPARTURE */}
+          {/* Departure */}
           <div>
             <label
               htmlFor="departure"
@@ -217,23 +224,19 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="departure"
-              name="departure"
+              {...register("departure")}
               type="text"
               placeholder="City or Airport code"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="departure-error"
             />
-            <div id="departure-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.departure &&
-                state.errors.departure.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.departure && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.departure.message}
+              </p>
+            )}
           </div>
 
-          {/* DESTINATION */}
+          {/* Destination */}
           <div>
             <label
               htmlFor="destination"
@@ -243,20 +246,16 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="destination"
-              name="destination"
+              {...register("destination")}
               type="text"
               placeholder="City or Airport code"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="destination-error"
             />
-            <div id="destination-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.destination &&
-                state.errors.destination.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.destination && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.destination.message}
+              </p>
+            )}
           </div>
 
           {/* PNR */}
@@ -266,22 +265,16 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="pnr"
-              name="pnr"
+              {...register("pnr")}
               type="text"
-              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
-              aria-describedby="pnr-error"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
             />
-            <div id="pnr-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.pnr &&
-                state.errors.pnr.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.pnr && (
+              <p className="mt-2 text-sm text-red-500">{errors.pnr.message}</p>
+            )}
           </div>
 
-          {/* PROVIDER COST */}
+          {/* Provider Cost */}
           <div>
             <label
               htmlFor="providerCost"
@@ -291,24 +284,21 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="providerCost"
-              name="providerCost"
+              {...register("providerCost")}
               type="number"
               step="0.01"
               placeholder="0.00"
-              className="block w-full rounded-md border border-gray-200 py-2 pl-3 text-sm placeholder:text-gray-500"
-              aria-describedby="providerCost-error"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
+              onChange={(e) => setProviderCost(parseFloat(e.target.value) || 0)}
             />
-            <div id="providerCost-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.providerCost &&
-                state.errors.providerCost.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.providerCost && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.providerCost.message}
+              </p>
+            )}
           </div>
 
-          {/* CONSUMER COST */}
+          {/* Consumer Cost */}
           <div>
             <label
               htmlFor="consumerCost"
@@ -318,48 +308,43 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="consumerCost"
-              name="consumerCost"
+              {...register("consumerCost")}
               type="number"
               step="0.01"
               placeholder="0.00"
-              className="block w-full rounded-md border border-gray-200 py-2 pl-3 text-sm placeholder:text-gray-500"
-              aria-describedby="consumerCost-error"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
+              onChange={(e) => setConsumerCost(parseFloat(e.target.value) || 0)}
             />
-            <div id="consumerCost-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.consumerCost &&
-                state.errors.consumerCost.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.consumerCost && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.consumerCost.message}
+              </p>
+            )}
           </div>
 
-          {/* PROFIT */}
+          {/* Profit */}
           <div>
             <label htmlFor="profit" className="mb-2 block text-sm font-medium">
               Profit
             </label>
             <input
               id="profit"
-              name="profit"
+              {...register("profit")}
               type="number"
               step="0.01"
               placeholder="0.00"
-              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="profit-error"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500 bg-gray-100"
+              value={profit}
+              disabled
             />
-            <div id="profit-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.profit &&
-                state.errors.profit.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.profit && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.profit.message}
+              </p>
+            )}
           </div>
 
-          {/* REFERENCE */}
+          {/* Reference */}
           <div>
             <label
               htmlFor="reference"
@@ -369,22 +354,18 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="reference"
-              name="reference"
+              {...register("reference")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="reference-error"
             />
-            <div id="reference-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.reference &&
-                state.errors.reference.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.reference && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.reference.message}
+              </p>
+            )}
           </div>
 
-          {/* CLIENT PAYMENT METHOD */}
+          {/* Client Payment Method */}
           <div>
             <label
               htmlFor="clientPaymentMethod"
@@ -394,27 +375,19 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="clientPaymentMethod"
-              name="clientPaymentMethod"
+              {...register("clientPaymentMethod")}
               type="text"
               placeholder="e.g. Credit Card, PayPal"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="clientPaymentMethod-error"
             />
-            <div
-              id="clientPaymentMethod-error"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {/* {state.errors?.clientPaymentMethod &&
-                state.errors.clientPaymentMethod.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.clientPaymentMethod && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.clientPaymentMethod.message}
+              </p>
+            )}
           </div>
 
-          {/* PAYMENT TO PROVIDER */}
+          {/* Payment to Provider */}
           <div>
             <label
               htmlFor="paymentToProvider"
@@ -424,49 +397,37 @@ export default function ThemedTicketForm() {
             </label>
             <input
               id="paymentToProvider"
-              name="paymentToProvider"
+              {...register("paymentToProvider")}
               type="text"
               placeholder="e.g. Bank Transfer, Cash, etc."
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="paymentToProvider-error"
             />
-            <div
-              id="paymentToProvider-error"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {/* {state.errors?.paymentToProvider &&
-                state.errors.paymentToProvider.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.paymentToProvider && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.paymentToProvider.message}
+              </p>
+            )}
           </div>
 
-          {/* SEGMENT */}
+          {/* Segment */}
           <div>
             <label htmlFor="segment" className="mb-2 block text-sm font-medium">
               Segment
             </label>
             <input
               id="segment"
-              name="segment"
+              {...register("segment")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="segment-error"
             />
-            <div id="segment-error" aria-live="polite" aria-atomic="true">
-              {/* {state.errors?.segment &&
-                state.errors.segment.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.segment && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.segment.message}
+              </p>
+            )}
           </div>
 
-          {/* FURTHER DESCRIPTION */}
+          {/* Further Description */}
           <div className="md:col-span-2">
             <label
               htmlFor="furtherDescription"
@@ -476,28 +437,20 @@ export default function ThemedTicketForm() {
             </label>
             <textarea
               id="furtherDescription"
-              name="furtherDescription"
+              {...register("furtherDescription")}
               rows={3}
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              aria-describedby="furtherDescription-error"
             />
-            <div
-              id="furtherDescription-error"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {/* {state.errors?.furtherDescription &&
-                state.errors.furtherDescription.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))} */}
-            </div>
+            {errors.furtherDescription && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.furtherDescription.message}
+              </p>
+            )}
           </div>
         </div>
       </div>
 
-      {/* FORM ACTION BUTTONS */}
+      {/* Form Action Buttons */}
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/dashboard"
@@ -505,7 +458,9 @@ export default function ThemedTicketForm() {
         >
           Cancel
         </Link>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Submitting..." : "Add Ticket"}
+        </Button>
       </div>
     </form>
   );
