@@ -1,13 +1,11 @@
 import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import { lusitana } from "./fonts";
+import Image from "next/image";
 
 export default function MerajLogo() {
   return (
-    <div
-      className={`${lusitana.className} flex flex-row items-center leading-none text-white`}
-    >
-      <GlobeAltIcon className="h-12 w-12 rotate-[15deg]" />
-      <p className="text-[44px]">Meraj</p>
+    <div className="flex w-full items-center justify-center">
+      <Image src="/logo.png" alt="Meraj Logo" width={180} height={180} />
     </div>
   );
 }

@@ -18,7 +18,7 @@ export default function ProvidersTable({
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(query);
-    }, 3000);
+    }, 1000);
 
     return () => {
       clearTimeout(handler);

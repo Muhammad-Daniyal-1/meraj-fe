@@ -18,7 +18,7 @@ export default function TicketsTable({
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(query);
-    }, 3000);
+    }, 1000);
 
     return () => {
       clearTimeout(handler);
@@ -89,7 +89,25 @@ export default function TicketsTable({
                   scope="col"
                   className="px-4 py-5 font-medium sm:pl-6 whitespace-nowrap"
                 >
+                  Operation Type
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-5 font-medium whitespace-nowrap"
+                >
+                  PNR Number
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-5 font-medium whitespace-nowrap"
+                >
                   Ticket Number
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-5 font-medium whitespace-nowrap"
+                >
+                  Issue Date
                 </th>
                 <th
                   scope="col"
@@ -97,6 +115,7 @@ export default function TicketsTable({
                 >
                   Client Name
                 </th>
+
                 <th
                   scope="col"
                   className="px-3 py-5 font-medium whitespace-nowrap"
@@ -113,85 +132,7 @@ export default function TicketsTable({
                   scope="col"
                   className="px-3 py-5 font-medium whitespace-nowrap"
                 >
-                  Status
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Operation Type
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Issue Date
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
                   Departure Date
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Return Date
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Departure
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Destination
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  PNR
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Provider Cost
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Consumer Cost
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Profit
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Reference
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Client Payment Method
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Payment to Provider
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -209,15 +150,6 @@ export default function TicketsTable({
                 <td className="whitespace-nowrap px-3 py-3">7</td>
                 <td className="whitespace-nowrap px-3 py-3">8</td>
                 <td className="whitespace-nowrap px-3 py-3">9</td>
-                <td className="whitespace-nowrap px-3 py-3">10</td>
-                <td className="whitespace-nowrap px-3 py-3">11</td>
-                <td className="whitespace-nowrap px-3 py-3">12</td>
-                <td className="whitespace-nowrap px-3 py-3">13</td>
-                <td className="whitespace-nowrap px-3 py-3">14</td>
-                <td className="whitespace-nowrap px-3 py-3">15</td>
-                <td className="whitespace-nowrap px-3 py-3">16</td>
-                <td className="whitespace-nowrap px-3 py-3">17</td>
-                <td className="whitespace-nowrap px-3 py-3">18</td>
               </tr>
               {/* {invoices?.map((invoice) => (
                 <tr

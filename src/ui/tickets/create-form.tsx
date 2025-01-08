@@ -3,6 +3,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useDebouncedCallback } from "use-debounce";
+import Select from "react-select";
 import { Button } from "@/ui/button";
 import { TicketFormData, TicketFormSchema } from "@/lib/schema";
 import { useCreateTicketMutation } from "@/lib/api/ticketApi";
@@ -10,6 +12,8 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useGetProvidersQuery } from "@/lib/api/providerApi";
+import { useGetAgentsQuery } from "@/lib/api/agentApi";
 
 export default function CreateTicketForm() {
   const router = useRouter();
@@ -26,10 +30,49 @@ export default function CreateTicketForm() {
   const [providerCost, setProviderCost] = useState(0);
   const [consumerCost, setConsumerCost] = useState(0);
   const [profit, setProfit] = useState(0);
+  const [providerSearch, setProviderSearch] = useState("");
+  const [agentSearch, setAgentSearch] = useState("");
+
+  const { data: providerData, refetch: refetchProviders } =
+    useGetProvidersQuery({
+      page: 1,
+      limit: 1,
+      search: providerSearch,
+    });
+
+  const { data: agentData, refetch: refetchAgents } = useGetAgentsQuery({
+    page: 1,
+    limit: 1,
+    search: agentSearch,
+  });
+
+  const providersOptions = Array.isArray(providerData?.providers)
+    ? providerData.providers.map((provider: any) => ({
+        label: provider.name,
+        value: provider._id,
+      }))
+    : [];
+
+  const agentsOptions = Array.isArray(agentData?.agents)
+    ? agentData.agents.map((agent: any) => ({
+        label: agent.name,
+        value: agent._id,
+      }))
+    : [];
 
   useEffect(() => {
     setProfit(consumerCost - providerCost);
   }, [consumerCost, providerCost]);
+
+  const handleProviderSearch = useDebouncedCallback((inputValue) => {
+    setProviderSearch(inputValue);
+    // refetchProviders();
+  }, 300);
+
+  const handleAgentSearch = useDebouncedCallback((inputValue) => {
+    setAgentSearch(inputValue);
+    // refetchAgents();
+  }, 300);
 
   const onSubmit = async (data: TicketFormData) => {
     try {
@@ -98,11 +141,12 @@ export default function CreateTicketForm() {
             >
               Provider ID
             </label>
-            <input
+            <Select
               id="providerId"
-              {...register("providerId")}
-              type="text"
-              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
+              options={providersOptions}
+              onInputChange={handleProviderSearch}
+              placeholder="Search and select a provider"
+              // className="text-sm"
             />
             {errors.providerId && (
               <p className="mt-2 text-sm text-red-500">
@@ -116,11 +160,12 @@ export default function CreateTicketForm() {
             <label htmlFor="agent" className="mb-2 block text-sm font-medium">
               Agent
             </label>
-            <input
+            <Select
               id="agent"
-              {...register("agent")}
-              type="text"
-              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
+              options={agentsOptions}
+              onInputChange={handleAgentSearch}
+              placeholder="Search and select an agent"
+              // className="text-sm"
             />
             {errors.agent && (
               <p className="mt-2 text-sm text-red-500">

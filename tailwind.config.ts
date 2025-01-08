@@ -13,11 +13,12 @@ const config: Config = {
         "13": "repeat(13, minmax(0, 1fr))",
       },
       colors: {
-        blue: {
-          400: "#2589FE",
-          500: "#0070F3",
-          600: "#2F6FEB",
+        primary: {
+          400: "#5E0202",
+          500: "#4E0202",
+          600: "#3F0101",
         },
+        "primary-light": "#FFE5E5",
       },
     },
     keyframes: {
