@@ -21,6 +21,7 @@ const links = [
   // },
   // { name: "Customers", href: "/dashboard/customers", icon: UserGroupIcon },
   { name: "Tickets", href: "/dashboard/tickets", icon: TicketIcon },
+  { name: "Ledgers", href: "/dashboard/ledgers", icon:  DocumentDuplicateIcon  },
   { name: "Providers", href: "/dashboard/providers", icon: UserGroupIcon },
   { name: "Agents", href: "/dashboard/agents", icon: UserGroupIcon },
   { name: "Users", href: "/dashboard/users", icon: UserGroupIcon },
