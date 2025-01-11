@@ -47,7 +47,7 @@ export default function AgentsTable({
       </div>
     );
 
-  if (data?.agents?.length === 0)
+  if (data?.agents?.length < 1)
     return (
       <div className="mt-6 text-center text-gray-500">No agents found.</div>
     );

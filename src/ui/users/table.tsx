@@ -51,7 +51,7 @@ export default function UsersTable({
     );
   }
 
-  if (data?.agents?.length === 0)
+  if (data?.agents?.length < 1)
     return (
       <div className="mt-6 text-center text-gray-500">No users found.</div>
     );

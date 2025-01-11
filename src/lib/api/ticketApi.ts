@@ -9,7 +9,7 @@ const ticketApi = baseApi.injectEndpoints({
       },
       providesTags: ["Tickets"],
     }),
-    getTicket: builder.query({
+    getTicketById: builder.query({
       query: (id) => `/tickets/get-ticket/${id}`,
       providesTags: ["Tickets"],
     }),
@@ -23,7 +23,7 @@ const ticketApi = baseApi.injectEndpoints({
     }),
     updateTicket: builder.mutation({
       query: (ticket) => ({
-        url: "/tickets/update",
+        url: `/tickets/update/${ticket._id}`,
         method: "PATCH",
         body: ticket,
       }),
@@ -41,7 +41,7 @@ const ticketApi = baseApi.injectEndpoints({
 
 export const {
   useGetTicketsQuery,
-  useGetTicketQuery,
+  useGetTicketByIdQuery,
   useCreateTicketMutation,
   useUpdateTicketMutation,
   useDeleteTicketMutation,

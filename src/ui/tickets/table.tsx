@@ -2,8 +2,8 @@
 
 import { useGetTicketsQuery } from "@/lib/api/ticketApi";
 import Pagination from "./pagination";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { UpdateTicket, DeleteTicket } from "./buttons";
 
 export default function TicketsTable({
   query,
@@ -37,8 +37,22 @@ export default function TicketsTable({
     search: searchQuery,
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error</div>;
+  const formatDisplayDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "numeric",
+    });
+  };
+
+  if (isLoading) return <div className="mt-6 text-center text-gray-500">Loading...</div>;
+  if (error) return <div className="mt-6 text-center text-gray-500">Error</div>;
+
+  if (data?.tickets?.length < 1 )
+    return (
+      <div className="mt-6 text-center text-gray-500">No tickts found.</div>
+    );
 
   return (
     <div className="mt-6 flow-root overflow-x-auto scrollbar-visible">
@@ -87,7 +101,7 @@ export default function TicketsTable({
               <tr>
                 <th
                   scope="col"
-                  className="px-4 py-5 font-medium sm:pl-6 whitespace-nowrap"
+                  className="px-3 py-5 font-medium sm:pl-6 whitespace-nowrap"
                 >
                   Operation Type
                 </th>
@@ -140,62 +154,53 @@ export default function TicketsTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              <tr className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-                <td className="whitespace-nowrap px-3 py-3">1</td>
-                <td className="whitespace-nowrap px-3 py-3">2</td>
-                <td className="whitespace-nowrap px-3 py-3">3</td>
-                <td className="whitespace-nowrap px-3 py-3">4</td>
-                <td className="whitespace-nowrap px-3 py-3">5</td>
-                <td className="whitespace-nowrap px-3 py-3">6</td>
-                <td className="whitespace-nowrap px-3 py-3">7</td>
-                <td className="whitespace-nowrap px-3 py-3">8</td>
-                <td className="whitespace-nowrap px-3 py-3">9</td>
-              </tr>
-              {/* {invoices?.map((invoice) => (
+              {data?.tickets?.map((ticket: any) => (
                 <tr
-                  key={invoice.id}
+                  key={ticket._id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
-                    </div>
+                    {ticket.operationType}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
+                    {ticket.pnr}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(invoice.amount)}
+                    {ticket.ticketNumber}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(invoice.date)}
+                    {formatDisplayDate(ticket.issueDate)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.status} />
+                    {ticket.clientName}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {ticket.agent.name}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {ticket.provider.name}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {formatDisplayDate(ticket.departureDate)}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
+                      <UpdateTicket id={ticket._id} />
+                      <DeleteTicket id={ticket._id} />
                     </div>
                   </td>
                 </tr>
-              ))} */}
+              ))}
             </tbody>
           </table>
           {/* </div> */}
         </div>
       </div>
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={2} />
-      </div>
+      {data?.pagination?.totalPages && data?.pagination?.totalPages > 1 && (
+        <div className="mt-5 flex w-full justify-center">
+          <Pagination totalPages={2} />
+        </div>
+      )}
     </div>
   );
 }

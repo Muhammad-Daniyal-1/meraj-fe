@@ -47,7 +47,7 @@ export default function ProvidersTable({
       </div>
     );
 
-  if (data?.providers?.length === 0)
+  if (data?.providers?.length < 1)
     return (
       <div className="mt-6 text-center text-gray-500">No providers found.</div>
     );

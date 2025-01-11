@@ -55,7 +55,7 @@ export type ProviderFormData = z.infer<typeof ProviderSchema>;
 export const TicketFormSchema = z.object({
   ticketNumber: z.string().nonempty("Ticket Number is required."),
   clientName: z.string().nonempty("Client Name is required."),
-  providerId: z.string().nonempty("Provider ID is required."),
+  provider: z.string().nonempty("Provider ID is required."),
   agent: z.string().nonempty("Agent is required."),
   operationType: z.string().nonempty("Operation Type is required."),
   issueDate: z.string().nonempty("Issue Date is required."),
@@ -75,7 +75,7 @@ export const TicketFormSchema = z.object({
     .number()
     .min(0, "Consumer Cost must be a non-negative number."),
   profit: z.number(),
-  reference: z.string().nonempty("Reference is required."),
+  reference: z.string().optional(),
   clientPaymentMethod: z
     .string()
     .nonempty("Client Payment Method is required."),

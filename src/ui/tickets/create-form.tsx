@@ -15,6 +15,15 @@ import { useState } from "react";
 import { useGetProvidersQuery } from "@/lib/api/providerApi";
 import { useGetAgentsQuery } from "@/lib/api/agentApi";
 
+const operationTypes = [
+  { label: "Issue", value: "Issue" },
+  {label: "Re-Issue", value: "Re-Issue" },
+  { label: "Visa", value: "Visa" },
+  { label: "Umrah", value: "Umrah" },
+  { label: "Hotel", value: "Hotel" },
+  { label: "Others", value: "Others" },
+];
+
 export default function CreateTicketForm() {
   const router = useRouter();
   const {
@@ -22,6 +31,8 @@ export default function CreateTicketForm() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
+    trigger
   } = useForm<TicketFormData>({
     resolver: zodResolver(TicketFormSchema),
   });
@@ -36,13 +47,13 @@ export default function CreateTicketForm() {
   const { data: providerData, refetch: refetchProviders } =
     useGetProvidersQuery({
       page: 1,
-      limit: 1,
+      limit: 50,
       search: providerSearch,
     });
 
   const { data: agentData, refetch: refetchAgents } = useGetAgentsQuery({
     page: 1,
-    limit: 1,
+    limit: 50,
     search: agentSearch,
   });
 
@@ -61,8 +72,11 @@ export default function CreateTicketForm() {
     : [];
 
   useEffect(() => {
-    setProfit(consumerCost - providerCost);
-  }, [consumerCost, providerCost]);
+    const profitValue = consumerCost - providerCost;
+    setProfit(profitValue);
+    setValue('profit', profitValue);
+    trigger('profit');
+  }, [consumerCost, providerCost, setValue, trigger]);
 
   const handleProviderSearch = useDebouncedCallback((inputValue) => {
     setProviderSearch(inputValue);
@@ -76,7 +90,10 @@ export default function CreateTicketForm() {
 
   const onSubmit = async (data: TicketFormData) => {
     try {
-      await createTicket({ ...data, profit }).unwrap();
+      const formattedData = {
+        ...data,
+      };
+      await createTicket(formattedData).unwrap();
       toast.success("Ticket added successfully!");
       router.push("/dashboard/tickets");
       reset();
@@ -143,14 +160,21 @@ export default function CreateTicketForm() {
             </label>
             <Select
               id="providerId"
+              name="providerId"
               options={providersOptions}
               onInputChange={handleProviderSearch}
               placeholder="Search and select a provider"
               // className="text-sm"
+              onChange={
+                async (selectedOption: any) => {
+                  setValue('provider', selectedOption.value);
+                  await trigger('provider');
+                }
+              }
             />
-            {errors.providerId && (
+            {errors.provider && (
               <p className="mt-2 text-sm text-red-500">
-                {errors.providerId.message}
+                {errors.provider.message}
               </p>
             )}
           </div>
@@ -165,6 +189,12 @@ export default function CreateTicketForm() {
               options={agentsOptions}
               onInputChange={handleAgentSearch}
               placeholder="Search and select an agent"
+              onChange={
+                async (selectedOption: any) => {
+                  setValue('agent', selectedOption.value);
+                  await trigger('agent');
+                }
+              }
               // className="text-sm"
             />
             {errors.agent && (
@@ -182,12 +212,17 @@ export default function CreateTicketForm() {
             >
               Operation Type
             </label>
-            <input
+            <Select
               id="operationType"
+              options={operationTypes}
+              placeholder="Select an operation type"
               {...register("operationType")}
-              type="text"
-              placeholder="(e.g., Sale, Refund)"
-              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
+              onChange={
+                async (selectedOption: any) => {
+                  setValue('operationType', selectedOption.value);
+                  await trigger('operationType');
+                }
+              }
             />
             {errors.operationType && (
               <p className="mt-2 text-sm text-red-500">
@@ -329,12 +364,14 @@ export default function CreateTicketForm() {
             </label>
             <input
               id="providerCost"
-              {...register("providerCost")}
               type="number"
-              step="0.01"
-              placeholder="0.00"
-              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              onChange={(e) => setProviderCost(parseFloat(e.target.value) || 0)}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0;
+                setProviderCost(value);
+                setValue('providerCost', value);
+                trigger('providerCost');
+              }}
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
             />
             {errors.providerCost && (
               <p className="mt-2 text-sm text-red-500">
@@ -353,12 +390,14 @@ export default function CreateTicketForm() {
             </label>
             <input
               id="consumerCost"
-              {...register("consumerCost")}
               type="number"
-              step="0.01"
-              placeholder="0.00"
-              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
-              onChange={(e) => setConsumerCost(parseFloat(e.target.value) || 0)}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0;
+                setConsumerCost(value);
+                setValue('consumerCost', value);
+                trigger('consumerCost');
+              }}
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
             />
             {errors.consumerCost && (
               <p className="mt-2 text-sm text-red-500">
