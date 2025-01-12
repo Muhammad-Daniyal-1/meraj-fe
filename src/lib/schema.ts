@@ -54,7 +54,7 @@ export type ProviderFormData = z.infer<typeof ProviderSchema>;
 
 export const TicketFormSchema = z.object({
   ticketNumber: z.string().nonempty("Ticket Number is required."),
-  clientName: z.string().nonempty("Client Name is required."),
+  passengerName: z.string().nonempty("Passenger Name is required."),
   provider: z.string().nonempty("Provider ID is required."),
   agent: z.string().nonempty("Agent is required."),
   operationType: z.string().nonempty("Operation Type is required."),

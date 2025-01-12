@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import clsx from "clsx";
-import { useGetUsersQuery } from "@/lib/api/userApi";
+import { useGetLedgersQuery } from "@/lib/api/ledgerApi";
 import Pagination from "../pagination";
+import { formatDateToLocal } from "@/lib/utils";
 // import { UpdateLedger, DeleteLedger } from "./buttons";
 
 export default function LedgersTable({
@@ -32,7 +33,7 @@ export default function LedgersTable({
     }
   }, [debouncedQuery]);
 
-  const { data, isLoading, isError } = useGetUsersQuery({
+  const { data, isLoading, isError } = useGetLedgersQuery({
     page: currentPage,
     limit: 20,
     search: searchQuery,
@@ -45,14 +46,14 @@ export default function LedgersTable({
   if (isError) {
     return (
       <div className="mt-6 text-center text-gray-500">
-        Error loading users. Please try again later.
+        Error loading ledgers. Please try again later.
       </div>
     );
   }
 
-  if (data?.agents?.length < 1)
+  if (data?.ledgers?.length < 1)
     return (
-      <div className="mt-6 text-center text-gray-500">No users found.</div>
+      <div className="mt-6 text-center text-gray-500">No ledgers found.</div>
     );
 
   return (
@@ -90,20 +91,23 @@ export default function LedgersTable({
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Name
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6 whitespace-nowrap">
+                  Agent Name / Passenger Name
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Username
+                <th scope="col" className="px-3 py-5 font-medium whitespace-nowrap">
+                  Ticket Number
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Role
+                <th scope="col" className="px-3 py-5 font-medium whitespace-nowrap">
+                  Transaction Type
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
+                <th scope="col" className="px-3 py-5 font-medium whitespace-nowrap">
+                  Amount
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Permissions
+                <th scope="col" className="px-3 py-5 font-medium whitespace-nowrap">
+                  Balance
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium  whitespace-nowrap ">
+                  Date
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -111,30 +115,46 @@ export default function LedgersTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {data?.users?.map((user: any) => (
+              {data?.ledgers?.map((ledger: any) => (
                 <tr
-                  key={user._id}
+                  key={ledger._id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <p>{user.name}</p>
+                    <p>
+                      {ledger?.entityId?.name
+                        ? ledger?.entityId?.name
+                        : ledger?.entityId?.passengerName}
+                    </p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {user.username}
+                    <p>{ledger?.ticketId?.ticketNumber}</p>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">{user.role}</td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <span
                       className={clsx(
                         "inline-flex items-center rounded-full px-2 py-1 text-xs",
                         {
-                          "bg-green-500 text-white": user.status,
-                          "bg-red-500 text-white": !user.status,
+                          "bg-green-500 text-white":
+                            ledger.transactionType === "credit",
+                          "bg-red-500 text-white":
+                            ledger.transactionType === "debit",
                         }
                       )}
                     >
-                      {user.status ? "Active" : "Blocked"}
+                      {ledger.transactionType === "credit"
+                        ? "Credit"
+                        : "Debit"}
                     </span>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <p>{ledger.amount}</p>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <p>{ledger.balance}</p>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <p>{formatDateToLocal(ledger.date)}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 w-1/2">
                     {/* <UserPermissions permissions={user.permissions} /> */}

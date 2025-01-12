@@ -17,7 +17,7 @@ import { useGetAgentsQuery } from "@/lib/api/agentApi";
 
 const operationTypes = [
   { label: "Issue", value: "Issue" },
-  {label: "Re-Issue", value: "Re-Issue" },
+  { label: "Re-Issue", value: "Re-Issue" },
   { label: "Visa", value: "Visa" },
   { label: "Umrah", value: "Umrah" },
   { label: "Hotel", value: "Hotel" },
@@ -59,16 +59,16 @@ export default function CreateTicketForm() {
 
   const providersOptions = Array.isArray(providerData?.providers)
     ? providerData.providers.map((provider: any) => ({
-        label: provider.name,
-        value: provider._id,
-      }))
+      label: provider.name,
+      value: provider._id,
+    }))
     : [];
 
   const agentsOptions = Array.isArray(agentData?.agents)
     ? agentData.agents.map((agent: any) => ({
-        label: agent.name,
-        value: agent._id,
-      }))
+      label: agent.name,
+      value: agent._id,
+    }))
     : [];
 
   useEffect(() => {
@@ -129,23 +129,23 @@ export default function CreateTicketForm() {
             )}
           </div>
 
-          {/* Client Name */}
+          {/* Passenger Name */}
           <div>
             <label
-              htmlFor="clientName"
+              htmlFor="passengerName"
               className="mb-2 block text-sm font-medium"
             >
-              Client Name
+              Passenger Name
             </label>
             <input
-              id="clientName"
-              {...register("clientName")}
+              id="passengerName"
+              {...register("passengerName")}
               type="text"
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
             />
-            {errors.clientName && (
+            {errors.passengerName && (
               <p className="mt-2 text-sm text-red-500">
-                {errors.clientName.message}
+                {errors.passengerName.message}
               </p>
             )}
           </div>
@@ -195,7 +195,7 @@ export default function CreateTicketForm() {
                   await trigger('agent');
                 }
               }
-              // className="text-sm"
+            // className="text-sm"
             />
             {errors.agent && (
               <p className="mt-2 text-sm text-red-500">

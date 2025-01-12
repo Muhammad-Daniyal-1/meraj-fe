@@ -19,7 +19,7 @@ const ticketApi = baseApi.injectEndpoints({
         method: "POST",
         body: ticket,
       }),
-      invalidatesTags: ["Tickets"],
+      invalidatesTags: ["Tickets", "Leadgers"],
     }),
     updateTicket: builder.mutation({
       query: (ticket) => ({
@@ -27,7 +27,7 @@ const ticketApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: ticket,
       }),
-      invalidatesTags: ["Tickets"],
+      invalidatesTags: ["Tickets", "Leadgers"],
     }),
     deleteTicket: builder.mutation({
       query: (id) => ({

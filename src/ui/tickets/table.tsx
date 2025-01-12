@@ -49,7 +49,7 @@ export default function TicketsTable({
   if (isLoading) return <div className="mt-6 text-center text-gray-500">Loading...</div>;
   if (error) return <div className="mt-6 text-center text-gray-500">Error</div>;
 
-  if (data?.tickets?.length < 1 )
+  if (data?.tickets?.length < 1)
     return (
       <div className="mt-6 text-center text-gray-500">No tickts found.</div>
     );
@@ -127,7 +127,7 @@ export default function TicketsTable({
                   scope="col"
                   className="px-3 py-5 font-medium whitespace-nowrap"
                 >
-                  Client Name
+                  Passenger Name
                 </th>
 
                 <th
@@ -172,7 +172,7 @@ export default function TicketsTable({
                     {formatDisplayDate(ticket.issueDate)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {ticket.clientName}
+                    {ticket.passengerName}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {ticket.agent.name}
