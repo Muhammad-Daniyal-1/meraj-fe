@@ -5,16 +5,14 @@ import clsx from "clsx";
 import { useGetLedgersQuery } from "@/lib/api/ledgerApi";
 import Pagination from "../pagination";
 import { formatDateToLocal } from "@/lib/utils";
-import { UpdateLedger, DeleteLedger } from "./buttons";
+// import { UpdateLedger, DeleteLedger } from "./buttons";
 
 export default function LedgersTable({
   query,
   currentPage,
-  agentId,
 }: {
   query: string;
   currentPage: number;
-  agentId?: string;
 }) {
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const [searchQuery, setSearchQuery] = useState("");
@@ -176,8 +174,8 @@ export default function LedgersTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateLedger id={ledger._id} />
-                      <DeleteLedger id={ledger._id} />
+                      {/* <UpdateLedger id={ledger._id} />
+                      <DeleteLedger id={ledger._id} /> */}
                     </div>
                   </td>
                 </tr>
