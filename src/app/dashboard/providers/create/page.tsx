@@ -1,5 +1,5 @@
 import Form from "@/ui/providers/create-form";
-import Breadcrumbs from "@/ui/providers/breadcrumbs";
+import Breadcrumbs from "@/ui/breadcrumbs";
 
 import { Metadata } from "next";
 

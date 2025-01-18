@@ -46,7 +46,8 @@ export default function TicketsTable({
     });
   };
 
-  if (isLoading) return <div className="mt-6 text-center text-gray-500">Loading...</div>;
+  if (isLoading)
+    return <div className="mt-6 text-center text-gray-500">Loading...</div>;
   if (error) return <div className="mt-6 text-center text-gray-500">Error</div>;
 
   if (data?.tickets?.length < 1)
@@ -156,37 +157,41 @@ export default function TicketsTable({
             <tbody className="bg-white">
               {data?.tickets?.map((ticket: any) => (
                 <tr
-                  key={ticket._id}
+                  key={ticket?._id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    {ticket.operationType}
+                    {ticket?.operationType}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">{ticket?.pnr}</td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {ticket?.ticketNumber}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {ticket.pnr}
+                    {formatDisplayDate(ticket?.issueDate)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {ticket.ticketNumber}
+                    {ticket?.passengerName}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDisplayDate(ticket.issueDate)}
+                    {ticket?.agent?.name || (
+                      <span className="text-gray-500 bg-gray-100 rounded-lg p-2">
+                        Direct Customer
+                      </span>
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {ticket.passengerName}
+                    {ticket?.provider?.name || (
+                      <span className="text-gray-500">N/A</span>
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {ticket.agent.name}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {ticket.provider.name}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatDisplayDate(ticket.departureDate)}
+                    {formatDisplayDate(ticket?.departureDate)}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateTicket id={ticket._id} />
-                      <DeleteTicket id={ticket._id} />
+                      <UpdateTicket id={ticket?._id} />
+                      <DeleteTicket id={ticket?._id} />
                     </div>
                   </td>
                 </tr>

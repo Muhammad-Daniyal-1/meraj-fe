@@ -56,7 +56,7 @@ export const TicketFormSchema = z.object({
   ticketNumber: z.string().nonempty("Ticket Number is required."),
   passengerName: z.string().nonempty("Passenger Name is required."),
   provider: z.string().nonempty("Provider ID is required."),
-  agent: z.string().nonempty("Agent is required."),
+  agent: z.string().optional(),
   operationType: z.string().nonempty("Operation Type is required."),
   issueDate: z.string().nonempty("Issue Date is required."),
   departureDate: z.string().nonempty("Departure Date is required."),

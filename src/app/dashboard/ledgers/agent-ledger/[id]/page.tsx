@@ -1,5 +1,5 @@
 import Search from "@/ui/search";
-import Table from "@/ui/ledgers/table";
+import AgentLedgersTable from "@/ui/ledgers/agent-ledger-table";
 import { lusitana } from "@/ui/fonts";
 
 import { Metadata } from "next";
@@ -14,14 +14,12 @@ export const generateMetadata = (): Metadata => {
 export default async function Page(props: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<{
-    query?: string;
     page?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
   const params = await props.params;
   const id = params.id;
-  const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
 
   return (
@@ -33,7 +31,7 @@ export default async function Page(props: {
         <Search placeholder="Search ledgers..." />
         {/* <CreateLedger /> */}
       </div>
-      <Table query={query} currentPage={currentPage} agentId={id} />
+      <AgentLedgersTable currentPage={currentPage} entityId={id} />
     </div>
   );
 }

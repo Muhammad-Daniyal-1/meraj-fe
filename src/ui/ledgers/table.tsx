@@ -2,19 +2,18 @@
 
 import { useState, useEffect } from "react";
 import clsx from "clsx";
-import { useGetLedgersQuery } from "@/lib/api/ledgerApi";
+import { useGetLedgersSummaryQuery } from "@/lib/api/ledgerApi";
 import Pagination from "../pagination";
 import { formatDateToLocal } from "@/lib/utils";
 import { UpdateLedger, DeleteLedger } from "./buttons";
+import Link from "next/link";
 
 export default function LedgersTable({
   query,
   currentPage,
-  agentId,
 }: {
   query: string;
   currentPage: number;
-  agentId?: string;
 }) {
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,11 +34,13 @@ export default function LedgersTable({
     }
   }, [debouncedQuery]);
 
-  const { data, isLoading, isError } = useGetLedgersQuery({
+  const { data, isLoading, isError } = useGetLedgersSummaryQuery({
     page: currentPage,
     limit: 20,
     search: searchQuery,
   });
+
+  console.log(data);
 
   if (isLoading) {
     return <div className="mt-6 text-center text-gray-500">Loading...</div>;
@@ -53,28 +54,28 @@ export default function LedgersTable({
     );
   }
 
-  if (data?.ledgers?.length < 1)
+  if (data?.summaries?.length < 1)
     return (
       <div className="mt-6 text-center text-gray-500">No ledgers found.</div>
     );
 
   return (
     <div className="mt-6 flow-root">
-      <div className="inline-block min-w-full align-middle">
+      <div className="inline-block min-w-full ali gn-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {data?.users?.map((user: any) => (
+            {data?.summaries?.map((ledger: any) => (
               <div
-                key={user._id}
+                key={ledger.entityId}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <p>Name: {user.name}</p>
+                      <p>Name: {ledger.name}</p>
                     </div>
                     <p className="text-sm text-gray-500">
-                      Username: {user.username}
+                      Username: {ledger.username}
                     </p>
                   </div>
                 </div>
@@ -103,54 +104,44 @@ export default function LedgersTable({
                   scope="col"
                   className="px-3 py-5 font-medium whitespace-nowrap"
                 >
-                  Ticket Number
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Transaction Type
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Amount
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
                   Balance
                 </th>
+
                 <th
                   scope="col"
                   className="px-3 py-5 font-medium  whitespace-nowrap "
                 >
-                  Date
+                  Ledger Type
                 </th>
-                {/* <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
-                </th> */}
               </tr>
             </thead>
             <tbody className="bg-white">
-              {data?.ledgers?.map((ledger: any) => (
+              {data?.summaries?.map((ledger: any) => (
                 <tr
-                  key={ledger._id}
+                  key={ledger?.entityId}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                    <p>{ledger?.name}</p>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <p>{ledger?.balance}</p>
+                  </td>
+
+                  <td className="whitespace-nowrap px-3 py-3">
                     <p>
-                      {ledger?.entityId?.name
-                        ? ledger?.entityId?.name
-                        : ledger?.entityId?.passengerName}
+                      {ledger?.entityType === "Agents" ? (
+                        <span className="text-gray-500 bg-gray-100 rounded-lg p-2">
+                          Agent
+                        </span>
+                      ) : (
+                        <span className="text-gray-500 bg-gray-100 rounded-lg p-2">
+                          Direct Customer
+                        </span>
+                      )}
                     </p>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <p>{ledger?.ticketId?.ticketNumber}</p>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  {/* <td className="whitespace-nowrap px-3 py-3">
                     <span
                       className={clsx(
                         "inline-flex items-center rounded-full px-2 py-1 text-xs",
@@ -164,21 +155,15 @@ export default function LedgersTable({
                     >
                       {ledger.transactionType === "credit" ? "Credit" : "Debit"}
                     </span>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <p>{ledger.amount}</p>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <p>{ledger.balance}</p>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <p>{formatDateToLocal(ledger.date)}</p>
-                  </td>
+                  </td> */}
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateLedger id={ledger._id} />
-                      <DeleteLedger id={ledger._id} />
-                    </div>
+                    <Link
+                      href={`/dashboard/ledgers/agent-ledger/${ledger?.entityId}`}
+                    >
+                      <span className="flex items-center rounded-md border p-2 hover:bg-primary-600 hover:text-white w-fit transition-all duration-300">
+                        Open Ledger
+                      </span>
+                    </Link>
                   </td>
                 </tr>
               ))}
