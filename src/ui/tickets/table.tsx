@@ -4,6 +4,7 @@ import { useGetTicketsQuery } from "@/lib/api/ticketApi";
 import Pagination from "./pagination";
 import { useState, useEffect } from "react";
 import { UpdateTicket, DeleteTicket } from "./buttons";
+import { formatDateToLocal } from "@/lib/utils";
 
 export default function TicketsTable({
   query,
@@ -36,15 +37,6 @@ export default function TicketsTable({
     limit: 20,
     search: searchQuery,
   });
-
-  const formatDisplayDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "numeric",
-    });
-  };
 
   if (isLoading)
     return <div className="mt-6 text-center text-gray-500">Loading...</div>;
@@ -168,7 +160,7 @@ export default function TicketsTable({
                     {ticket?.ticketNumber}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDisplayDate(ticket?.issueDate)}
+                    {formatDateToLocal(ticket?.issueDate)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {ticket?.passengerName}
@@ -186,7 +178,7 @@ export default function TicketsTable({
                     )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDisplayDate(ticket?.departureDate)}
+                    {formatDateToLocal(ticket?.departureDate)}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

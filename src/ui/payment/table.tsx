@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import clsx from "clsx";
-import { useGetLedgersQuery } from "@/lib/api/ledgerApi";
+import { useGetPaymentsQuery } from "@/lib/api/paymentApi";
 import Pagination from "../pagination";
 import { formatDateToLocal } from "@/lib/utils";
 // import { UpdateLedger, DeleteLedger } from "./buttons";
 
-export default function LedgersTable({
+export default function PaymentsTable({
   query,
   currentPage,
 }: {
@@ -33,11 +33,13 @@ export default function LedgersTable({
     }
   }, [debouncedQuery]);
 
-  const { data, isLoading, isError } = useGetLedgersQuery({
+  const { data, isLoading, isError } = useGetPaymentsQuery({
     page: currentPage,
     limit: 20,
     search: searchQuery,
   });
+
+  console.log(data);
 
   if (isLoading) {
     return <div className="mt-6 text-center text-gray-500">Loading...</div>;
@@ -51,7 +53,7 @@ export default function LedgersTable({
     );
   }
 
-  if (data?.ledgers?.length < 1)
+  if (data?.payments?.length < 1)
     return (
       <div className="mt-6 text-center text-gray-500">No payments found.</div>
     );
@@ -61,32 +63,32 @@ export default function LedgersTable({
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {data?.users?.map((user: any) => (
+            {/* {data?.payments?.map((payment: any) => (
               <div
-                key={user._id}
+                key={payment._id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <p>Name: {user.name}</p>
+                      <p>Name: {payment.name}</p>
                     </div>
                     <p className="text-sm text-gray-500">
-                      Username: {user.username}
+                      Username: {payment.username}
                     </p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    {/* <UserPermissions permissions={user.permissions} /> */}
+                    <UserPermissions permissions={user.permissions} />
                   </div>
                   <div className="flex justify-end gap-2">
-                    {/* <UpdateUser id={user._id} />
-                    <DeleteUser id={user._id} /> */}
+                    <UpdateUser id={user._id} />
+                    <DeleteUser id={user._id} />
                   </div>
                 </div>
               </div>
-            ))}
+            ))} */}
           </div>
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
@@ -101,31 +103,25 @@ export default function LedgersTable({
                   scope="col"
                   className="px-3 py-5 font-medium whitespace-nowrap"
                 >
-                  Ticket Number
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Transaction Type
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
                   Amount
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Balance
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-5 font-medium  whitespace-nowrap "
                 >
-                  Date
+                  Payment Date
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-5 font-medium  whitespace-nowrap "
+                >
+                  Payment Method
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-5 font-medium  whitespace-nowrap "
+                >
+                  Payment Added By
                 </th>
                 {/* <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -133,44 +129,25 @@ export default function LedgersTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {data?.ledgers?.map((ledger: any) => (
+              {data?.payments?.map((payment: any) => (
                 <tr
-                  key={ledger._id}
+                  key={payment._id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <p>
-                      {ledger?.entityId?.name
-                        ? ledger?.entityId?.name
-                        : ledger?.entityId?.passengerName}
-                    </p>
+                    <p>{payment?.name}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{ledger?.ticketId?.ticketNumber}</p>
+                    <p>{payment.amount}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <span
-                      className={clsx(
-                        "inline-flex items-center rounded-full px-2 py-1 text-xs",
-                        {
-                          "bg-green-500 text-white":
-                            ledger.transactionType === "credit",
-                          "bg-red-500 text-white":
-                            ledger.transactionType === "debit",
-                        }
-                      )}
-                    >
-                      {ledger.transactionType === "credit" ? "Credit" : "Debit"}
-                    </span>
+                    <p>{formatDateToLocal(payment.paymentDate)}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{ledger.amount}</p>
+                    <p>{payment.paymentMethod}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{ledger.balance}</p>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <p>{formatDateToLocal(ledger.date)}</p>
+                    <p>{payment?.user?.name}</p>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

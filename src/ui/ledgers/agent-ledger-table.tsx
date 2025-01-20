@@ -187,12 +187,6 @@ const AgentLedgersTable: React.FC<AgentLedgersTableProps> = ({
                 >
                   Date
                 </th>
-                <th
-                  scope="col"
-                  className="px-3 py-5 font-medium whitespace-nowrap"
-                >
-                  Actions
-                </th>
               </tr>
             </thead>
             <tbody className="bg-white">

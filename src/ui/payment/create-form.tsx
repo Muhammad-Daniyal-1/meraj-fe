@@ -30,13 +30,17 @@ export default function CreatePaymentForm() {
   });
 
   const [createPayment, { isLoading }] = useCreatePaymentMutation();
-  const { data: ledgers = [], isLoading: isLedgerLoading } = useGetLedgersSummaryQuery(
-    {}
-  );
+  const { data: ledgers = [], isLoading: isLedgerLoading } =
+    useGetLedgersSummaryQuery({});
 
   const onSubmit = async (data: PaymentFormData) => {
     try {
-      await createPayment(data).unwrap();
+      const transformedData = {
+        ...data,
+        paymentDate: new Date(data.paymentDate),
+      };
+
+      await createPayment(transformedData).unwrap();
       toast.success("Payment added successfully!");
       router.push("/dashboard/payments");
       reset();

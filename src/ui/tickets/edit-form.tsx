@@ -7,7 +7,10 @@ import { useDebouncedCallback } from "use-debounce";
 import Select from "react-select";
 import { Button } from "@/ui/button";
 import { TicketFormData, TicketFormSchema } from "@/lib/schema";
-import { useUpdateTicketMutation, useGetTicketByIdQuery } from "@/lib/api/ticketApi";
+import {
+  useUpdateTicketMutation,
+  useGetTicketByIdQuery,
+} from "@/lib/api/ticketApi";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -60,34 +63,37 @@ export default function EditTicketForm({ id }: { id: string }) {
 
   const providersOptions = Array.isArray(providerData?.providers)
     ? providerData.providers.map((provider: any) => ({
-      label: provider.name,
-      value: provider._id,
-    }))
+        label: provider.name,
+        value: provider._id,
+      }))
     : [];
 
   const agentsOptions = Array.isArray(agentData?.agents)
     ? agentData.agents.map((agent: any) => ({
-      label: agent.name,
-      value: agent._id,
-    }))
+        label: agent.name,
+        value: agent._id,
+      }))
     : [];
 
   useEffect(() => {
     if (data?.ticket) {
-      const formatDate = (dateString: string) => {
+      const formatDate = (dateString: string | Date) => {
         if (!dateString) return "";
         const date = new Date(dateString);
-        return date.toISOString().split('T')[0];
+        return date.toISOString().split("T")[0];
       };
 
       reset({
         ticketNumber: data.ticket.ticketNumber || "",
         passengerName: data.ticket.passengerName || "",
-        provider: data.ticket.provider._id || "",
-        agent: data.ticket.agent._id || "",
+        provider: data?.ticket?.provider?._id || "",
+        agent: data?.ticket?.agent?._id || "",
         operationType: data.ticket.operationType || "",
+        // @ts-ignore
         issueDate: formatDate(data.ticket.issueDate),
+        // @ts-ignore
         departureDate: formatDate(data.ticket.departureDate),
+        // @ts-ignore
         returnDate: formatDate(data.ticket.returnDate),
         departure: data.ticket.departure || "",
         destination: data.ticket.destination || "",
@@ -104,16 +110,16 @@ export default function EditTicketForm({ id }: { id: string }) {
 
       // Set initial select values
       setSelectedProvider({
-        value: data.ticket.provider._id,
-        label: data.ticket.provider.name,
+        value: data?.ticket?.provider?._id,
+        label: data?.ticket?.provider?.name,
       });
       setSelectedAgent({
-        value: data.ticket.agent._id,
-        label: data.ticket.agent.name,
+        value: data?.ticket?.agent?._id,
+        label: data?.ticket?.agent?.name,
       });
-      setSelectedOperationType(operationTypes.find(
-        (type) => type.value === data.ticket.operationType
-      ));
+      setSelectedOperationType(
+        operationTypes.find((type) => type.value === data.ticket.operationType)
+      );
     }
   }, [data, reset]);
 
@@ -141,7 +147,9 @@ export default function EditTicketForm({ id }: { id: string }) {
   }
 
   if (!data?.ticket) {
-    return <div className="mt-6 text-center text-gray-500">Ticket not found</div>;
+    return (
+      <div className="mt-6 text-center text-gray-500">Ticket not found</div>
+    );
   }
 
   return (
@@ -206,13 +214,11 @@ export default function EditTicketForm({ id }: { id: string }) {
               onInputChange={handleProviderSearch}
               placeholder="Search and select a provider"
               value={selectedProvider}
-              onChange={
-                async (selectedOption: any) => {
-                  setSelectedProvider(selectedOption);
-                  setValue('provider', selectedOption.value);
-                  await trigger('provider');
-                }
-              }
+              onChange={async (selectedOption: any) => {
+                setSelectedProvider(selectedOption);
+                setValue("provider", selectedOption.value);
+                await trigger("provider");
+              }}
             />
             {errors.provider && (
               <p className="mt-2 text-sm text-red-500">
@@ -232,13 +238,11 @@ export default function EditTicketForm({ id }: { id: string }) {
               onInputChange={handleAgentSearch}
               placeholder="Search and select an agent"
               value={selectedAgent}
-              onChange={
-                async (selectedOption: any) => {
-                  setSelectedAgent(selectedOption);
-                  setValue('agent', selectedOption.value);
-                  await trigger('agent');
-                }
-              }
+              onChange={async (selectedOption: any) => {
+                setSelectedAgent(selectedOption);
+                setValue("agent", selectedOption.value);
+                await trigger("agent");
+              }}
             />
             {errors.agent && (
               <p className="mt-2 text-sm text-red-500">
@@ -260,13 +264,11 @@ export default function EditTicketForm({ id }: { id: string }) {
               options={operationTypes}
               placeholder="Select an operation type"
               value={selectedOperationType}
-              onChange={
-                async (selectedOption: any) => {
-                  setSelectedOperationType(selectedOption);
-                  setValue('operationType', selectedOption.value);
-                  await trigger('operationType');
-                }
-              }
+              onChange={async (selectedOption: any) => {
+                setSelectedOperationType(selectedOption);
+                setValue("operationType", selectedOption.value);
+                await trigger("operationType");
+              }}
             />
             {errors.operationType && (
               <p className="mt-2 text-sm text-red-500">
@@ -413,10 +415,11 @@ export default function EditTicketForm({ id }: { id: string }) {
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
               onChange={(e) => {
                 const value = parseFloat(e.target.value) || 0;
-                setValue('providerCost', value);
-                const consumerCost = parseFloat(String(data?.ticket?.consumerCost)) || 0;
-                setValue('profit', consumerCost - value);
-                trigger('providerCost');
+                setValue("providerCost", value);
+                const consumerCost =
+                  parseFloat(String(data?.ticket?.consumerCost)) || 0;
+                setValue("profit", consumerCost - value);
+                trigger("providerCost");
               }}
             />
             {errors.providerCost && (
@@ -441,10 +444,11 @@ export default function EditTicketForm({ id }: { id: string }) {
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
               onChange={(e) => {
                 const value = parseFloat(e.target.value) || 0;
-                setValue('consumerCost', value);
-                const providerCost = parseFloat(String(data?.ticket?.providerCost)) || 0;
-                setValue('profit', value - providerCost);
-                trigger('consumerCost');
+                setValue("consumerCost", value);
+                const providerCost =
+                  parseFloat(String(data?.ticket?.providerCost)) || 0;
+                setValue("profit", value - providerCost);
+                trigger("consumerCost");
               }}
             />
             {errors.consumerCost && (

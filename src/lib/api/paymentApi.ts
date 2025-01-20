@@ -3,7 +3,10 @@ import baseApi from "./baseApi";
 export const paymentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getPayments: builder.query({
-      query: () => "/payments",
+      query: (params = {}) => {
+        const queryParams = new URLSearchParams(params).toString();
+        return `/ledgers/payment${queryParams ? `?${queryParams}` : ""}`;
+      },
     }),
     createPayment: builder.mutation({
       query: (payment) => ({
@@ -11,6 +14,7 @@ export const paymentApi = baseApi.injectEndpoints({
         method: "POST",
         body: payment,
       }),
+      invalidatesTags: ["Payments", "Ledgers"],
     }),
   }),
 });

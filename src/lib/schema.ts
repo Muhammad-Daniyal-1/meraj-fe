@@ -58,9 +58,18 @@ export const TicketFormSchema = z.object({
   provider: z.string().nonempty("Provider ID is required."),
   agent: z.string().optional(),
   operationType: z.string().nonempty("Operation Type is required."),
-  issueDate: z.string().nonempty("Issue Date is required."),
-  departureDate: z.string().nonempty("Departure Date is required."),
-  returnDate: z.string().nonempty("Return Date is required."),
+  issueDate: z.preprocess(
+    (val) => (typeof val === "string" ? new Date(val) : val),
+    z.date().refine((val) => !!val, "Issue Date is required.")
+  ),
+  departureDate: z.preprocess(
+    (val) => (typeof val === "string" ? new Date(val) : val),
+    z.date().refine((val) => !!val, "Departure Date is required.")
+  ),
+  returnDate: z.preprocess(
+    (val) => (typeof val === "string" ? new Date(val) : val),
+    z.date().refine((val) => !!val, "Return Date is required.")
+  ),
   departure: z
     .string()
     .nonempty("Departure (City or Airport code) is required."),
@@ -91,13 +100,10 @@ export const PaymentFormSchema = z.object({
   entityType: z.string().nonempty("Entity Type is required."),
   amount: z.number().positive("Amount must be a positive number."),
   paymentMethod: z.string().optional(),
-  paymentDate: z
-    .string()
-    .nonempty("Payment Date is required.")
-    .refine(
-      (date) => !isNaN(new Date(date).getTime()),
-      "Payment Date must be a valid date."
-    ),
+  paymentDate: z.preprocess(
+    (val) => (typeof val === "string" ? new Date(val) : val),
+    z.date().refine((val) => !!val, "Payment Date is required.")
+  ),
   referenceNumber: z.string().optional(),
   description: z.string().optional(),
 });
