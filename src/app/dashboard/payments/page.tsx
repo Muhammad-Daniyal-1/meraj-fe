@@ -1,14 +1,14 @@
 import Search from "@/ui/search";
 import Table from "@/ui/payment/table";
-// import { CreateUser } from "@/ui/users/buttons";
+import { CreatePayment } from "@/ui/payment/buttons";
 import { lusitana } from "@/ui/fonts";
 
 import { Metadata } from "next";
 
 export const generateMetadata = (): Metadata => {
   return {
-    title: "Ledgers",
-    description: "Ledgers specific to this page.",
+    title: "Payments",
+    description: "Payments specific to this page.",
   };
 };
 
@@ -25,11 +25,11 @@ export default async function Page(props: {
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Ledgers</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Payments</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search ledgers..." />
-        {/* <CreateLedger /> */}
+        <Search placeholder="Search payments..." />
+        <CreatePayment />
       </div>
       <Table query={query} currentPage={currentPage} />
     </div>

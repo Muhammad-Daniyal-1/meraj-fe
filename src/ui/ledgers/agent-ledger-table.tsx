@@ -127,12 +127,12 @@ const AgentLedgersTable: React.FC<AgentLedgersTableProps> = ({
                       <p>
                         Name:{" "}
                         {ledger.entityId.name
-                          ? ledger.entityId.name
-                          : ledger.entityId.passengerName}
+                          ? ledger?.entityId?.name
+                          : ledger?.entityId?.passengerName}
                       </p>
                     </div>
                     <p className="text-sm text-gray-500">
-                      Ticket Number: {ledger.ticketId.ticketNumber}
+                      Ticket Number: {ledger?.ticketId?.ticketNumber}
                     </p>
                   </div>
                 </div>
@@ -203,13 +203,13 @@ const AgentLedgersTable: React.FC<AgentLedgersTableProps> = ({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <p>
-                      {ledger.entityId.name
-                        ? ledger.entityId.name
-                        : ledger.entityId.passengerName}
+                      {ledger?.entityId?.name
+                        ? ledger?.entityId?.name
+                        : ledger?.entityId?.passengerName}
                     </p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{ledger.ticketId.ticketNumber}</p>
+                    <p>{ledger?.ticketId?.ticketNumber}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <span
@@ -217,28 +217,30 @@ const AgentLedgersTable: React.FC<AgentLedgersTableProps> = ({
                         "inline-flex items-center rounded-full px-2 py-1 text-xs",
                         {
                           "bg-green-500 text-white":
-                            ledger.transactionType === "credit",
+                            ledger?.transactionType === "credit",
                           "bg-red-500 text-white":
-                            ledger.transactionType === "debit",
+                            ledger?.transactionType === "debit",
                         }
                       )}
                     >
-                      {ledger.transactionType === "credit" ? "Credit" : "Debit"}
+                      {ledger?.transactionType === "credit"
+                        ? "Credit"
+                        : "Debit"}
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{ledger.amount.toLocaleString()}</p>
+                    <p>{ledger?.amount}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{ledger.balance.toLocaleString()}</p>
+                    <p>{ledger?.balance}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{formatDateToLocal(ledger.date)}</p>
+                    <p>{formatDateToLocal(ledger?.date)}</p>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateLedger id={ledger._id} />
-                      <DeleteLedger id={ledger._id} />
+                      <UpdateLedger id={ledger?._id} />
+                      <DeleteLedger id={ledger?._id} />
                     </div>
                   </td>
                 </tr>

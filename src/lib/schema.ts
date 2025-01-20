@@ -85,3 +85,21 @@ export const TicketFormSchema = z.object({
 });
 
 export type TicketFormData = z.infer<typeof TicketFormSchema>;
+
+export const PaymentFormSchema = z.object({
+  entityId: z.string().nonempty("Entity ID is required."),
+  entityType: z.string().nonempty("Entity Type is required."),
+  amount: z.number().positive("Amount must be a positive number."),
+  paymentMethod: z.string().optional(),
+  paymentDate: z
+    .string()
+    .nonempty("Payment Date is required.")
+    .refine(
+      (date) => !isNaN(new Date(date).getTime()),
+      "Payment Date must be a valid date."
+    ),
+  referenceNumber: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export type PaymentFormData = z.infer<typeof PaymentFormSchema>;

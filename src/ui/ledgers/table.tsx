@@ -71,12 +71,12 @@ export default function LedgersTable({
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
-                    <div className="mb-2 flex items-center">
+                    {/* <div className="mb-2 flex items-center">
                       <p>Name: {ledger.name}</p>
                     </div>
                     <p className="text-sm text-gray-500">
                       Username: {ledger.username}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">

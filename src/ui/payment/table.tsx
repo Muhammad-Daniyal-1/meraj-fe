@@ -46,14 +46,14 @@ export default function LedgersTable({
   if (isError) {
     return (
       <div className="mt-6 text-center text-gray-500">
-        Error loading ledgers. Please try again later.
+        Error loading payments. Please try again later.
       </div>
     );
   }
 
   if (data?.ledgers?.length < 1)
     return (
-      <div className="mt-6 text-center text-gray-500">No ledgers found.</div>
+      <div className="mt-6 text-center text-gray-500">No payments found.</div>
     );
 
   return (
