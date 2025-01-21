@@ -6,8 +6,8 @@ import { Metadata } from "next";
 
 export const generateMetadata = (): Metadata => {
   return {
-    title: "Ledgers",
-    description: "Ledgers specific to this page.",
+    title: "Ledger",
+    // description: "Ledgers specific to this page.",
   };
 };
 
@@ -25,7 +25,7 @@ export default async function Page(props: {
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Agent Ledgers</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Ledger</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search ledgers..." />

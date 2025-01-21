@@ -8,7 +8,7 @@ import Select from "react-select";
 import { Button } from "@/ui/button";
 import { TicketFormData, TicketFormSchema } from "@/lib/schema";
 import {
-  useUpdateTicketMutation,
+  useCreateTicketMutation,
   useGetTicketByIdQuery,
 } from "@/lib/api/ticketApi";
 import { toast } from "react-toastify";
@@ -31,7 +31,7 @@ const paymentTypes = [
   { label: "Partial Payment", value: "Partial" },
 ];
 
-export default function EditTicketForm({ id }: { id: string }) {
+export default function ReIssueTicketForm({ id }: { id: string }) {
   const router = useRouter();
   const {
     register,
@@ -45,7 +45,7 @@ export default function EditTicketForm({ id }: { id: string }) {
     resolver: zodResolver(TicketFormSchema),
   });
 
-  const [updateTicket, { isLoading }] = useUpdateTicketMutation();
+  const [createTicket, { isLoading }] = useCreateTicketMutation();
   const { data, isLoading: isTicketLoading } = useGetTicketByIdQuery(id);
 
   const [providerSearch, setProviderSearch] = useState("");
@@ -143,7 +143,7 @@ export default function EditTicketForm({ id }: { id: string }) {
 
   const onSubmit = async (formData: TicketFormData) => {
     try {
-      await updateTicket({ ...formData, _id: id }).unwrap();
+      await createTicket({ ...formData }).unwrap();
       toast.success("Ticket updated successfully!");
       router.push("/dashboard/tickets");
     } catch (err: any) {
@@ -422,7 +422,7 @@ export default function EditTicketForm({ id }: { id: string }) {
             >
               Provider Cost
             </label>
-            <input
+            {/* <input
               id="providerCost"
               {...register("providerCost")}
               type="number"
@@ -435,7 +435,26 @@ export default function EditTicketForm({ id }: { id: string }) {
                 setValue("profit", consumerCost - value);
                 trigger("providerCost");
               }}
+            /> */}
+            <input
+              id="providerCost"
+              {...register("providerCost")}
+              type="number"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+              onChange={(e) => {
+                const newProviderCost = parseFloat(e.target.value) || 0;
+                setValue("providerCost", newProviderCost);
+
+                // Use watch() to get the current consumerCost from the form, not data?.ticket
+                const currentConsumerCost = watch("consumerCost") || 0;
+
+                // Recalculate profit using the updated providerCost and current consumerCost
+                setValue("profit", currentConsumerCost - newProviderCost);
+
+                trigger("providerCost");
+              }}
             />
+
             {errors.providerCost && (
               <p className="mt-2 text-sm text-red-500">
                 {errors.providerCost.message}
@@ -451,7 +470,7 @@ export default function EditTicketForm({ id }: { id: string }) {
             >
               Consumer Cost
             </label>
-            <input
+            {/* <input
               id="consumerCost"
               {...register("consumerCost")}
               type="number"
@@ -464,7 +483,26 @@ export default function EditTicketForm({ id }: { id: string }) {
                 setValue("profit", value - providerCost);
                 trigger("consumerCost");
               }}
+            /> */}
+            <input
+              id="consumerCost"
+              {...register("consumerCost")}
+              type="number"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+              onChange={(e) => {
+                const newConsumerCost = parseFloat(e.target.value) || 0;
+                setValue("consumerCost", newConsumerCost);
+
+                // Use watch() to get the current providerCost from the form, not data?.ticket
+                const currentProviderCost = watch("providerCost") || 0;
+
+                // Recalculate profit using the updated consumerCost and current providerCost
+                setValue("profit", newConsumerCost - currentProviderCost);
+
+                trigger("consumerCost");
+              }}
             />
+
             {errors.consumerCost && (
               <p className="mt-2 text-sm text-red-500">
                 {errors.consumerCost.message}
@@ -639,7 +677,7 @@ export default function EditTicketForm({ id }: { id: string }) {
           Cancel
         </Link>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Updating..." : "Update Ticket"}
+          {isLoading ? "Re-Issuing..." : "Re-Issue Ticket"}
         </Button>
       </div>
     </form>

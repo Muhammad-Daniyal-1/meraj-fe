@@ -435,6 +435,39 @@ export default function CreateTicketForm() {
             )}
           </div>
 
+          {/* Payment type full/partial */}
+          <div>
+            <label
+              htmlFor="paymentType"
+              className="mb-2 block text-sm font-medium"
+            >
+              Paytment Type{" "}
+              <small>
+                (Full/Partial (by defult set to partial if the direct client
+                pays full amount select full))
+              </small>
+            </label>
+            <Select
+              id="paymentType"
+              options={paymentTypes}
+              placeholder="Select a payment type"
+              value={paymentTypes.find(
+                (option) => option.value === watch("paymentType")
+              )}
+              isClearable
+              onChange={async (selectedOption: any) => {
+                const value = selectedOption?.value || "Partial Payment"; // Default to Partial Payment if cleared
+                setValue("paymentType", value);
+                await trigger("paymentType");
+              }}
+            />
+            {errors.paymentType && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.paymentType.message}
+              </p>
+            )}
+          </div>
+
           {/* Reference */}
           <div>
             <label
@@ -496,39 +529,6 @@ export default function CreateTicketForm() {
             {errors.paymentToProvider && (
               <p className="mt-2 text-sm text-red-500">
                 {errors.paymentToProvider.message}
-              </p>
-            )}
-          </div>
-
-          {/* Payment type full/partial */}
-          <div>
-            <label
-              htmlFor="paymentType"
-              className="mb-2 block text-sm font-medium"
-            >
-              Paytment Type{" "}
-              <small>
-                (Full/Partial (by defult set to partial if the direct client
-                pays full amount select full))
-              </small>
-            </label>
-            <Select
-              id="paymentType"
-              options={paymentTypes}
-              placeholder="Select a payment type"
-              value={paymentTypes.find(
-                (option) => option.value === watch("paymentType")
-              )}
-              isClearable
-              onChange={async (selectedOption: any) => {
-                const value = selectedOption?.value || "Partial Payment"; // Default to Partial Payment if cleared
-                setValue("paymentType", value);
-                await trigger("paymentType");
-              }}
-            />
-            {errors.paymentType && (
-              <p className="mt-2 text-sm text-red-500">
-                {errors.paymentType.message}
               </p>
             )}
           </div>

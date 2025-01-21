@@ -1,11 +1,11 @@
-import EditTicketForm from "@/ui/tickets/edit-form";
+import ReIssueTicketForm from "@/ui/tickets/re-issue-form";
 import Breadcrumbs from "@/ui/breadcrumbs";
 import { Metadata } from "next";
 
 export const generateMetadata = (): Metadata => {
   return {
-    title: "Edit Ticket",
-    description: "Edit Ticket specific to this page.",
+    title: "Re-Issue Ticket",
+    description: "Re-Issue Ticket specific to this page.",
   };
 };
 
@@ -19,13 +19,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         breadcrumbs={[
           { label: "Tickets", href: "/dashboard/tickets" },
           {
-            label: "Edit Ticket",
-            href: `/dashboard/tickets/edit/${id}`,
+            label: "Re-Issue Ticket",
+            href: `/dashboard/tickets/re-issue/${id}`,
             active: true,
           },
         ]}
       />
-      <EditTicketForm id={id} />
+      <ReIssueTicketForm id={id} />
     </main>
   );
 }

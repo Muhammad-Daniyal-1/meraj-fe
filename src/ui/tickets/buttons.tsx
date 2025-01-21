@@ -7,7 +7,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useDeleteTicketMutation } from "@/lib/api/ticketApi";
 
-
 export const CreateTicket = () => {
   return (
     <Link
@@ -24,39 +23,52 @@ export function UpdateTicket({ id }: { id: string }) {
   return (
     <Link
       href={`/dashboard/tickets/edit/${id}`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      className="rounded-md border p-2 hover:bg-green-400 bg-green-300 text-white"
     >
-      <PencilIcon className="w-5" />
+      <PencilIcon className="w-5 text-green-950" />
     </Link>
   );
 }
 
 export function DeleteTicket({ id }: { id: string }) {
   const [deleteTicket] = useDeleteTicketMutation();
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = async () => {
-    try{
-        await deleteTicket(id);
-        toast.success("Ticket deleted successfully");
+    try {
+      await deleteTicket(id);
+      toast.success("Ticket deleted successfully");
     } catch {
-      toast.error("Failed to delete ticket")
+      toast.error("Failed to delete ticket");
     }
-  }
+  };
 
   return (
     <>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100"
-      onClick={() => setIsOpen(true)}
+      <button
+        type="submit"
+        className="rounded-md border p-2 hover:bg-red-400 bg-red-300 text-white"
+        onClick={() => setIsOpen(true)}
       >
         <span className="sr-only">Delete</span>
-        <TrashIcon className="w-4" />
+        <TrashIcon className="w-4 text-red-950" />
       </button>
       <ConfirmationModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={handleDelete}
       />
-      </>
+    </>
+  );
+}
+
+export function ReIssueTicket({ id }: { id: string }) {
+  return (
+    <Link
+      href={`/dashboard/tickets/re-issue/${id}`}
+      className="rounded-md border p-2 hover:bg-blue-500 bg-blue-700 text-white"
+    >
+      Re Issue
+    </Link>
   );
 }
