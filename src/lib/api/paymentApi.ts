@@ -7,6 +7,7 @@ export const paymentApi = baseApi.injectEndpoints({
         const queryParams = new URLSearchParams(params).toString();
         return `/ledgers/payment${queryParams ? `?${queryParams}` : ""}`;
       },
+      providesTags: ["Payments"],
     }),
     createPayment: builder.mutation({
       query: (payment) => ({

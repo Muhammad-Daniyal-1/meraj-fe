@@ -10,22 +10,34 @@ import { formatDateToLocal } from "@/lib/utils";
 export default function PaymentsTable({
   query,
   currentPage,
+  amount,
+  startDate,
+  endDate,
 }: {
   query: string;
   currentPage: number;
+  amount?: string;
+  startDate?: string;
+  endDate?: string;
 }) {
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedAmount, setDebouncedAmount] = useState(amount || "");
+  const [debouncedStartDate, setDebouncedStartDate] = useState(startDate || "");
+  const [debouncedEndDate, setDebouncedEndDate] = useState(endDate || "");
 
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(query);
+      setDebouncedAmount(amount || "");
+      setDebouncedStartDate(startDate || "");
+      setDebouncedEndDate(endDate || "");
     }, 1000);
 
     return () => {
       clearTimeout(handler);
     };
-  }, [query]);
+  }, [query, amount, startDate, endDate]);
 
   useEffect(() => {
     if (debouncedQuery.length >= 2 || debouncedQuery === "") {
@@ -35,11 +47,12 @@ export default function PaymentsTable({
 
   const { data, isLoading, isError } = useGetPaymentsQuery({
     page: currentPage,
-    limit: 20,
+    limit: 20, // Adjust as needed
     search: searchQuery,
+    amount: debouncedAmount,
+    startDate: debouncedStartDate,
+    endDate: debouncedEndDate,
   });
-
-  console.log(data);
 
   if (isLoading) {
     return <div className="mt-6 text-center text-gray-500">Loading...</div>;

@@ -84,6 +84,7 @@ export const TicketFormSchema = z.object({
     .number()
     .min(0, "Consumer Cost must be a non-negative number."),
   profit: z.number(),
+  paymentType: z.string().nonempty("Payment Type is required."),
   reference: z.string().optional(),
   clientPaymentMethod: z
     .string()

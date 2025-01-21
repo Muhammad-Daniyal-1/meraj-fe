@@ -24,6 +24,11 @@ const operationTypes = [
   { label: "Others", value: "Others" },
 ];
 
+const paymentTypes = [
+  { label: "Full Payment", value: "Full" },
+  { label: "Partial Payment", value: "Partial" },
+];
+
 export default function CreateTicketForm() {
   const router = useRouter();
   const {
@@ -32,9 +37,13 @@ export default function CreateTicketForm() {
     formState: { errors },
     reset,
     setValue,
-    trigger
+    trigger,
+    watch,
   } = useForm<TicketFormData>({
     resolver: zodResolver(TicketFormSchema),
+    defaultValues: {
+      paymentType: "Partial",
+    },
   });
 
   const [createTicket, { isLoading }] = useCreateTicketMutation();
@@ -59,23 +68,23 @@ export default function CreateTicketForm() {
 
   const providersOptions = Array.isArray(providerData?.providers)
     ? providerData.providers.map((provider: any) => ({
-      label: provider.name,
-      value: provider._id,
-    }))
+        label: provider.name,
+        value: provider._id,
+      }))
     : [];
 
   const agentsOptions = Array.isArray(agentData?.agents)
     ? agentData.agents.map((agent: any) => ({
-      label: agent.name,
-      value: agent._id,
-    }))
+        label: agent.name,
+        value: agent._id,
+      }))
     : [];
 
   useEffect(() => {
     const profitValue = consumerCost - providerCost;
     setProfit(profitValue);
-    setValue('profit', profitValue);
-    trigger('profit');
+    setValue("profit", profitValue);
+    trigger("profit");
   }, [consumerCost, providerCost, setValue, trigger]);
 
   const handleProviderSearch = useDebouncedCallback((inputValue) => {
@@ -161,16 +170,15 @@ export default function CreateTicketForm() {
             <Select
               id="providerId"
               name="providerId"
+              isClearable
               options={providersOptions}
               onInputChange={handleProviderSearch}
               placeholder="Search and select a provider"
               // className="text-sm"
-              onChange={
-                async (selectedOption: any) => {
-                  setValue('provider', selectedOption.value);
-                  await trigger('provider');
-                }
-              }
+              onChange={async (selectedOption: any) => {
+                setValue("provider", selectedOption.value);
+                await trigger("provider");
+              }}
             />
             {errors.provider && (
               <p className="mt-2 text-sm text-red-500">
@@ -182,20 +190,20 @@ export default function CreateTicketForm() {
           {/* Agent */}
           <div>
             <label htmlFor="agent" className="mb-2 block text-sm font-medium">
-              Agent
+              Agent{" "}
+              <small>(Leave it blank if selling to direct customer)</small>
             </label>
             <Select
               id="agent"
+              isClearable
               options={agentsOptions}
               onInputChange={handleAgentSearch}
               placeholder="Search and select an agent"
-              onChange={
-                async (selectedOption: any) => {
-                  setValue('agent', selectedOption.value);
-                  await trigger('agent');
-                }
-              }
-            // className="text-sm"
+              onChange={async (selectedOption: any) => {
+                setValue("agent", selectedOption.value);
+                await trigger("agent");
+              }}
+              // className="text-sm"
             />
             {errors.agent && (
               <p className="mt-2 text-sm text-red-500">
@@ -215,14 +223,13 @@ export default function CreateTicketForm() {
             <Select
               id="operationType"
               options={operationTypes}
+              isClearable
               placeholder="Select an operation type"
               {...register("operationType")}
-              onChange={
-                async (selectedOption: any) => {
-                  setValue('operationType', selectedOption.value);
-                  await trigger('operationType');
-                }
-              }
+              onChange={async (selectedOption: any) => {
+                setValue("operationType", selectedOption.value);
+                await trigger("operationType");
+              }}
             />
             {errors.operationType && (
               <p className="mt-2 text-sm text-red-500">
@@ -368,8 +375,8 @@ export default function CreateTicketForm() {
               onChange={(e) => {
                 const value = parseFloat(e.target.value) || 0;
                 setProviderCost(value);
-                setValue('providerCost', value);
-                trigger('providerCost');
+                setValue("providerCost", value);
+                trigger("providerCost");
               }}
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
             />
@@ -394,8 +401,8 @@ export default function CreateTicketForm() {
               onChange={(e) => {
                 const value = parseFloat(e.target.value) || 0;
                 setConsumerCost(value);
-                setValue('consumerCost', value);
-                trigger('consumerCost');
+                setValue("consumerCost", value);
+                trigger("consumerCost");
               }}
               className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
             />
@@ -489,6 +496,39 @@ export default function CreateTicketForm() {
             {errors.paymentToProvider && (
               <p className="mt-2 text-sm text-red-500">
                 {errors.paymentToProvider.message}
+              </p>
+            )}
+          </div>
+
+          {/* Payment type full/partial */}
+          <div>
+            <label
+              htmlFor="paymentType"
+              className="mb-2 block text-sm font-medium"
+            >
+              Paytment Type{" "}
+              <small>
+                (Full/Partial (by defult set to partial if the direct client
+                pays full amount select full))
+              </small>
+            </label>
+            <Select
+              id="paymentType"
+              options={paymentTypes}
+              placeholder="Select a payment type"
+              value={paymentTypes.find(
+                (option) => option.value === watch("paymentType")
+              )}
+              isClearable
+              onChange={async (selectedOption: any) => {
+                const value = selectedOption?.value || "Partial Payment"; // Default to Partial Payment if cleared
+                setValue("paymentType", value);
+                await trigger("paymentType");
+              }}
+            />
+            {errors.paymentType && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.paymentType.message}
               </p>
             )}
           </div>

@@ -16,10 +16,16 @@ export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;
     page?: string;
+    amount?: string;
+    startDate?: string;
+    endDate?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
+  const amount = searchParams?.amount || "";
+  const startDate = searchParams?.startDate || "";
+  const endDate = searchParams?.endDate || "";
   const currentPage = Number(searchParams?.page) || 1;
 
   return (
@@ -28,10 +34,16 @@ export default async function Page(props: {
         <h1 className={`${lusitana.className} text-2xl`}>Payments</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search payments..." />
+        <Search placeholder="Search Payments by Agent Name/Passenger Name or Added by Name or Payment Method" />
         <CreatePayment />
       </div>
-      <Table query={query} currentPage={currentPage} />
+      <Table
+        query={query}
+        currentPage={currentPage}
+        amount={amount}
+        startDate={startDate}
+        endDate={endDate}
+      />
     </div>
   );
 }
