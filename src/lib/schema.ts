@@ -37,7 +37,8 @@ export const AgentSchema = z.object({
   name: z.string().nonempty("Name is required."),
   email: z.string().email("Invalid email address."),
   phone: z.string().nonempty("Phone number is required."),
-  address: z.string().nonempty("Address is required."),
+  address: z.string().optional(),
+  cf: z.string().optional(),
 });
 
 export type AgentFormData = z.infer<typeof AgentSchema>;
@@ -47,7 +48,8 @@ export const ProviderSchema = z.object({
   name: z.string().nonempty("Name is required."),
   email: z.string().email("Invalid email address."),
   phone: z.string().nonempty("Phone number is required."),
-  address: z.string().nonempty("Address is required."),
+  address: z.string().optional(),
+  cf: z.string().optional(),
 });
 
 export type ProviderFormData = z.infer<typeof ProviderSchema>;

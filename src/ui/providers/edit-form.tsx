@@ -62,7 +62,7 @@ export default function EditProviderForm({ id }: { id: string }) {
               htmlFor="providerId"
               className="mb-2 block text-sm font-medium"
             >
-              Provider ID
+              Provider ID <span className="text-red-500">*</span>
             </label>
             <input
               id="id"
@@ -81,7 +81,7 @@ export default function EditProviderForm({ id }: { id: string }) {
               htmlFor="providerName"
               className="mb-2 block text-sm font-medium"
             >
-              Provider Name
+              Provider Name <span className="text-red-500">*</span>
             </label>
             <input
               id="name"
@@ -97,7 +97,7 @@ export default function EditProviderForm({ id }: { id: string }) {
           {/* Email */}
           <div>
             <label htmlFor="email" className="mb-2 block text-sm font-medium">
-              Email
+              Email <span className="text-red-500">*</span>
             </label>
             <input
               id="email"
@@ -115,7 +115,7 @@ export default function EditProviderForm({ id }: { id: string }) {
           {/* Phone */}
           <div>
             <label htmlFor="phone" className="mb-2 block text-sm font-medium">
-              Phone
+              Phone <span className="text-red-500">*</span>
             </label>
             <input
               id="phone"
@@ -130,8 +130,24 @@ export default function EditProviderForm({ id }: { id: string }) {
             )}
           </div>
 
+          {/* P.IVA/C.F */}
+          <div>
+            <label htmlFor="cf" className="mb-2 block text-sm font-medium">
+              P.IVA/C.F
+            </label>
+            <input
+              id="cf"
+              {...register("cf")}
+              type="text"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
+            />
+            {errors.cf && (
+              <p className="mt-2 text-sm text-red-500">{errors.cf.message}</p>
+            )}
+          </div>
+
           {/* Address */}
-          <div className="md:col-span-2">
+          <div>
             <label htmlFor="address" className="mb-2 block text-sm font-medium">
               Address
             </label>

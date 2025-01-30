@@ -109,6 +109,9 @@ export default function AgentsTable({
                   Contact
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
+                  P.IVA/C.F
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
                   Address
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
@@ -120,28 +123,29 @@ export default function AgentsTable({
               {data?.agents?.length > 0 &&
                 data?.agents?.map((agent: any) => (
                   <tr
-                    key={agent.id}
+                    key={agent?.id}
                     className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                   >
                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                      <p>{agent.id}</p>
+                      <p>{agent?.id}</p>
                     </td>
                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                      <p>{agent.name}</p>
+                      <p>{agent?.name}</p>
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">
-                      {agent.email}
+                      {agent?.email}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">
-                      {agent.phone}
+                      {agent?.phone}
                     </td>
+                    <td className="whitespace-nowrap px-3 py-3">{agent?.cf}</td>
                     <td className="whitespace-wrap px-3 py-3">
-                      {agent.address}
+                      {agent?.address}
                     </td>
                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                       <div className="flex justify-end gap-3">
-                        <UpdateAgent id={agent._id} />
-                        <DeleteAgent id={agent._id} />
+                        <UpdateAgent id={agent?._id} />
+                        <DeleteAgent id={agent?._id} />
                       </div>
                     </td>
                   </tr>

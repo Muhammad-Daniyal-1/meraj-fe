@@ -109,6 +109,9 @@ export default function ProvidersTable({
                   Contact
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
+                  P.IVA/C.F
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
                   Address
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
@@ -119,28 +122,31 @@ export default function ProvidersTable({
             <tbody className="bg-white">
               {data?.providers?.map((provider: any) => (
                 <tr
-                  key={provider.id}
+                  key={provider?.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <p>{provider.id}</p>
+                    <p>{provider?.id}</p>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <p>{provider.name}</p>
+                    <p>{provider?.name}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {provider.email}
+                    {provider?.email}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {provider.phone}
+                    {provider?.phone}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {provider?.cf}
                   </td>
                   <td className="whitespace-wrap px-3 py-3">
-                    {provider.address}
+                    {provider?.address}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateProvider id={provider._id} />
-                      <DeleteProvider id={provider._id} />
+                      <UpdateProvider id={provider?._id} />
+                      <DeleteProvider id={provider?._id} />
                     </div>
                   </td>
                 </tr>
