@@ -1,7 +1,7 @@
 import Search from "@/ui/search";
 import Table from "@/ui/tickets/table";
-import { CreateTicket } from "@/ui/tickets/buttons";
 import { lusitana } from "@/ui/fonts";
+import TicketSearch from "@/ui/tickets/ticket-search";
 
 import { Metadata } from "next";
 
@@ -16,11 +16,23 @@ export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;
     page?: string;
+    minDate?: string;
+    maxDate?: string;
+    minAmount?: string;
+    maxAmount?: string;
+    agent?: string;
+    provider?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
+  const minDate = searchParams?.minDate || "";
+  const maxDate = searchParams?.maxDate || "";
+  const minAmount = searchParams?.minAmount || "";
+  const maxAmount = searchParams?.maxAmount || "";
+  const agent = searchParams?.agent || "";
+  const provider = searchParams?.provider || "";
 
   return (
     <div className="w-full">
@@ -28,10 +40,19 @@ export default async function Page(props: {
         <h1 className={`${lusitana.className} text-2xl`}>Tickets</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search tickets..." />
-        <CreateTicket />
+        <TicketSearch />
+        {/* <Search placeholder="Search tickets..." /> */}
       </div>
-      <Table query={query} currentPage={currentPage} />
+      <Table
+        query={query}
+        currentPage={currentPage}
+        minDate={minDate}
+        maxDate={maxDate}
+        minAmount={minAmount}
+        maxAmount={maxAmount}
+        agent={agent}
+        provider={provider}
+      />
     </div>
   );
 }

@@ -2,40 +2,38 @@
 
 import { useGetTicketsQuery } from "@/lib/api/ticketApi";
 import Pagination from "./pagination";
-import { useState, useEffect } from "react";
 import { UpdateTicket, DeleteTicket, ReIssueTicket } from "./buttons";
 import { formatDateToLocal } from "@/lib/utils";
 
 export default function TicketsTable({
   query,
   currentPage,
+  minDate,
+  maxDate,
+  minAmount,
+  maxAmount,
+  agent,
+  provider,
 }: {
   query: string;
   currentPage: number;
+  minDate?: string;
+  maxDate?: string;
+  minAmount?: string;
+  maxAmount?: string;
+  agent?: string;
+  provider?: string;
 }) {
-  const [debouncedQuery, setDebouncedQuery] = useState(query);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedQuery(query);
-    }, 1000);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [query]);
-
-  useEffect(() => {
-    if (debouncedQuery.length >= 2 || debouncedQuery === "") {
-      setSearchQuery(debouncedQuery);
-    }
-  }, [debouncedQuery]);
-
   const { data, isLoading, error } = useGetTicketsQuery({
     page: currentPage,
     limit: 20,
-    search: searchQuery,
+    query,
+    minDate,
+    maxDate,
+    minAmount,
+    maxAmount,
+    agent,
+    provider,
   });
 
   if (isLoading)
