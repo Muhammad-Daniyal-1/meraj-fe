@@ -104,14 +104,14 @@ export default function CreateTicketForm() {
 
   const providersOptions = Array.isArray(providerData?.providers)
     ? providerData.providers.map((provider: any) => ({
-        label: provider.name,
+        label: provider.id,
         value: provider._id,
       }))
     : [];
 
   const agentsOptions = Array.isArray(agentData?.agents)
     ? agentData.agents.map((agent: any) => ({
-        label: agent.name,
+        label: agent.id,
         value: agent._id,
       }))
     : [];
