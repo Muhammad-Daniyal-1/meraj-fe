@@ -164,14 +164,14 @@ export default function TicketsTable({
                     {ticket?.passengerName}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {ticket?.agent?.name || (
+                    {ticket?.agent?.id || (
                       <span className="text-gray-500 bg-gray-100 rounded-lg p-2">
                         Direct Customer
                       </span>
                     )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {ticket?.provider?.name || (
+                    {ticket?.provider?.id || (
                       <span className="text-gray-500">N/A</span>
                     )}
                   </td>

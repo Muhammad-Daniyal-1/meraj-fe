@@ -9,6 +9,7 @@ import {
   UserPlusIcon,
   UsersIcon,
   IdentificationIcon,
+  Cog8ToothIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,6 +24,7 @@ const links = [
   { name: "Payments", href: "/dashboard/payments", icon: CurrencyDollarIcon },
   { name: "Providers", href: "/dashboard/providers", icon: IdentificationIcon },
   { name: "Agents", href: "/dashboard/agents", icon: UsersIcon },
+  { name: "Settings", href: "/dashboard/settings", icon: Cog8ToothIcon },
   { name: "Users", href: "/dashboard/users", icon: UserPlusIcon },
 ];
 

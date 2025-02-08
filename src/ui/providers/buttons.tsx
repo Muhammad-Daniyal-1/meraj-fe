@@ -31,14 +31,14 @@ export function UpdateProvider({ id }: { id: string }) {
 }
 
 export function DeleteProvider({ id }: { id: string }) {
-  const [deleteProvider] = useDeleteProviderMutation();
+  const [deleteProvider, { isLoading }] = useDeleteProviderMutation();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = async () => {
     try {
-      await deleteProvider(id);
+      const result = await deleteProvider(id).unwrap();
       setIsOpen(false);
-      toast.success("Provider deleted successfully");
+      toast.success(result?.message || "Provider deleted successfully");
     } catch {
       toast.error("Failed to delete provider");
     }
@@ -48,8 +48,9 @@ export function DeleteProvider({ id }: { id: string }) {
     <>
       <button
         type="submit"
-        className="rounded-md border p-2 hover:bg-gray-100"
+        className="rounded-md border p-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
         onClick={() => setIsOpen(true)}
+        disabled={isLoading}
       >
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-4" />

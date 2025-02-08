@@ -24,8 +24,9 @@ export default function CreateProviderForm() {
 
   const onSubmit = async (data: ProviderFormData) => {
     try {
-      await createProvider(data).unwrap();
-      toast.success("Provider added successfully!");
+      const result = await createProvider(data).unwrap();
+      console.log(result);
+      toast.success(result?.message || "Provider added successfully!");
       router.push("/dashboard/providers");
       reset();
     } catch (err: any) {
