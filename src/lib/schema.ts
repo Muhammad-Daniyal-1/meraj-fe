@@ -69,49 +69,15 @@ export const PaymentFormSchema = z.object({
 
 export type PaymentFormData = z.infer<typeof PaymentFormSchema>;
 
-// export const TicketFormSchema = z.object({
-//   ticketNumber: z.string().nonempty("Ticket Number is required."),
-//   passengerName: z.string().nonempty("Passenger Name is required."),
-//   provider: z.string().nonempty("Provider ID is required."),
-//   agent: z.string().optional(),
-//   operationType: z.string().nonempty("Operation Type is required."),
-//   issueDate: z.preprocess(
-//     (val) => (typeof val === "string" ? new Date(val) : val),
-//     z.date().refine((val) => !!val, "Issue Date is required.")
-//   ),
-//   departureDate: z.preprocess(
-//     (val) => (typeof val === "string" ? new Date(val) : val),
-//     z.date().refine((val) => !!val, "Departure Date is required.")
-//   ),
-//   returnDate: z.preprocess(
-//     (val) => (typeof val === "string" ? new Date(val) : val),
-//     z.date().refine((val) => !!val, "Return Date is required.")
-//   ),
-//   departure: z
-//     .string()
-//     .nonempty("Departure (City or Airport code) is required."),
-//   destination: z
-//     .string()
-//     .nonempty("Destination (City or Airport code) is required."),
-//   pnr: z.string().nonempty("PNR is required."),
-//   providerCost: z
-//     .number()
-//     .min(0, "Provider Cost must be a non-negative number."),
-//   consumerCost: z
-//     .number()
-//     .min(0, "Consumer Cost must be a non-negative number."),
-//   profit: z.number(),
-//   paymentType: z.string().nonempty("Payment Type is required."),
-//   reference: z.string().optional(),
-//   clientPaymentMethod: z
-//     .string()
-//     .nonempty("Client Payment Method is required."),
-//   paymentToProvider: z.string().nonempty("Payment to Provider is required."),
-//   segment: z.string().nonempty("Segment is required."),
-//   furtherDescription: z.string().optional(),
-// });
+export const PaymentMethodDropdownSchema = z.object({
+  name: z.string().nonempty("Name is required."),
+  type: z.string().nonempty("Payment Method is required."),
+  methodFor: z.string().nonempty("Method For is required."),
+});
 
-// export type TicketFormData = z.infer<typeof TicketFormSchema>;
+export type PaymentMethodDropdownFormData = z.infer<
+  typeof PaymentMethodDropdownSchema
+>;
 
 const preprocessDate = (arg: unknown) => {
   if (typeof arg === "string" || arg instanceof Date) {
