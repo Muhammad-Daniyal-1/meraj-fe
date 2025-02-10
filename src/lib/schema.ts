@@ -131,7 +131,7 @@ export const TicketFormSchema = z
       if (!data.airlineCode || data.airlineCode.trim() === "") {
         ctx.addIssue({
           code: "custom",
-          message: "Airline Code is required for flight operations.",
+          message: "Airline Code is required for ticket operations.",
           path: ["airlineCode"],
         });
       }
@@ -142,14 +142,14 @@ export const TicketFormSchema = z
         ctx.addIssue({
           code: "custom",
           message:
-            "Ticket Number Without Prefix is required for flight operations.",
+            "Ticket Number Without Prefix is required for ticket operations.",
           path: ["ticketNumberWithoutPrefix"],
         });
       }
       if (!data.ticketNumber || data.ticketNumber.trim() === "") {
         ctx.addIssue({
           code: "custom",
-          message: "Ticket Number is required for flight operations.",
+          message: "Ticket Number is required for ticket operations.",
           path: ["ticketNumber"],
         });
       } else if (!/^\d{13}$|^\d{16}$/.test(data.ticketNumber)) {
@@ -162,28 +162,28 @@ export const TicketFormSchema = z
       if (!data.passengerName || data.passengerName.trim() === "") {
         ctx.addIssue({
           code: "custom",
-          message: "Passenger Name is required for flight operations.",
+          message: "Passenger Name is required for ticket operations.",
           path: ["passengerName"],
         });
       }
       if (!data.issueDate) {
         ctx.addIssue({
           code: "custom",
-          message: "Issue Date is required for flight operations.",
+          message: "Issue Date is required for ticket operations.",
           path: ["issueDate"],
         });
       }
       if (!data.departureDate) {
         ctx.addIssue({
           code: "custom",
-          message: "Departure Date is required for flight operations.",
+          message: "Departure Date is required for ticket operations.",
           path: ["departureDate"],
         });
       }
       if (!data.returnDate) {
         ctx.addIssue({
           code: "custom",
-          message: "Return Date is required for flight operations.",
+          message: "Return Date is required for ticket operations.",
           path: ["returnDate"],
         });
       }
@@ -191,7 +191,7 @@ export const TicketFormSchema = z
         ctx.addIssue({
           code: "custom",
           message:
-            "Departure (City or Airport code) is required for flight operations.",
+            "Departure (City or Airport code) is required for ticket operations.",
           path: ["departure"],
         });
       }
@@ -199,14 +199,14 @@ export const TicketFormSchema = z
         ctx.addIssue({
           code: "custom",
           message:
-            "Destination (City or Airport code) is required for flight operations.",
+            "Destination (City or Airport code) is required for ticket operations.",
           path: ["destination"],
         });
       }
       if (!data.pnr || data.pnr.trim() === "") {
         ctx.addIssue({
           code: "custom",
-          message: "PNR is required for flight operations.",
+          message: "PNR is required for ticket operations.",
           path: ["pnr"],
         });
       }
@@ -234,21 +234,21 @@ export const TicketFormSchema = z
       if (!data.clientPaymentMethod || data.clientPaymentMethod.trim() === "") {
         ctx.addIssue({
           code: "custom",
-          message: "Client Payment Method is required for flight operations.",
+          message: "Client Payment Method is required for ticket operations.",
           path: ["clientPaymentMethod"],
         });
       }
       if (!data.paymentToProvider || data.paymentToProvider.trim() === "") {
         ctx.addIssue({
           code: "custom",
-          message: "Payment to Provider is required for flight operations.",
+          message: "Payment to Provider is required for ticket operations.",
           path: ["paymentToProvider"],
         });
       }
       if (!data.segment || data.segment.trim() === "") {
         ctx.addIssue({
           code: "custom",
-          message: "Segment is required for flight operations.",
+          message: "Segment is required for ticket operations.",
           path: ["segment"],
         });
       }

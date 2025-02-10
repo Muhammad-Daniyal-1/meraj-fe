@@ -7,6 +7,7 @@ import Select from "react-select";
 import { useDebouncedCallback } from "use-debounce";
 import { useGetProvidersQuery } from "@/lib/api/providerApi";
 import { useGetAgentsQuery } from "@/lib/api/agentApi";
+import { airlineCode } from "./data";
 
 export default function TicketSearch() {
   const searchParams = useSearchParams();
@@ -21,6 +22,7 @@ export default function TicketSearch() {
   const [query, setQuery] = useState("");
   const [providerSearch, setProviderSearch] = useState("");
   const [agentSearch, setAgentSearch] = useState("");
+  const [airlineCodeSearch, setAirlineCodeSearch] = useState("");
 
   const { data: providerData } = useGetProvidersQuery({
     page: 1,
@@ -48,12 +50,23 @@ export default function TicketSearch() {
       }))
     : [];
 
+  const airlineCodesOptions = Array.isArray(airlineCode)
+    ? airlineCode.map((airline: any) => ({
+        label: airline.label,
+        value: airline.value,
+      }))
+    : [];
+
   const handleProviderSearch = useDebouncedCallback((inputValue) => {
     setProviderSearch(inputValue);
   }, 300);
 
   const handleAgentSearch = useDebouncedCallback((inputValue) => {
     setAgentSearch(inputValue);
+  }, 300);
+
+  const handleAirlineCodeSearch = useDebouncedCallback((inputValue) => {
+    setAirlineCodeSearch(inputValue);
   }, 300);
 
   const handleSearch = () => {
@@ -64,6 +77,7 @@ export default function TicketSearch() {
     if (maxAmount) params.set("maxAmount", maxAmount);
     if (agent) params.set("agent", agent);
     if (provider) params.set("provider", provider);
+    if (airlineCodeSearch) params.set("airlineCode", airlineCodeSearch);
     if (query) params.set("query", query);
     replace(`?${params.toString()}`);
   };
@@ -76,6 +90,7 @@ export default function TicketSearch() {
     params.delete("maxAmount");
     params.delete("agent");
     params.delete("provider");
+    params.delete("airlineCode");
     params.delete("query");
     replace(`?${params.toString()}`);
 
@@ -85,6 +100,7 @@ export default function TicketSearch() {
     setMaxAmount("");
     setAgent("");
     setProvider("");
+    setAirlineCodeSearch("");
     setQuery("");
   };
 
@@ -180,6 +196,23 @@ export default function TicketSearch() {
           classNames={{
             control: () => "py-[5px]",
           }}
+        />
+
+        <Select
+          value={
+            airlineCodeSearch
+              ? airlineCodesOptions.find(
+                  (option: any) => option.value === airlineCodeSearch
+                )
+              : null
+          }
+          onChange={(selectedOption: any) =>
+            setAirlineCodeSearch(selectedOption?.value || "")
+          }
+          options={airlineCodesOptions}
+          placeholder="Select Airline Code"
+          isClearable
+          className="min-w-[250px]"
         />
       </div>
     </div>

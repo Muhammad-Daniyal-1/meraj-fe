@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import {
   BanknotesIcon,
   ClockIcon,
@@ -5,6 +8,7 @@ import {
   InboxIcon,
 } from "@heroicons/react/24/outline";
 import { lusitana } from "@/ui/fonts";
+import { useGetDashboardQuery } from "@/lib/api/dashboardApi";
 
 const iconMap = {
   collected: BanknotesIcon,
@@ -13,13 +17,51 @@ const iconMap = {
   invoices: InboxIcon,
 };
 
-export default async function CardWrapper() {
+export default function CardWrapper() {
+  const [data, setData] = useState<any>(null);
+  const { data: dashboardData, isLoading, refetch } = useGetDashboardQuery({});
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
+    if (dashboardData) {
+      setData(dashboardData);
+    }
+  }, [dashboardData]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!dashboardData) {
+    return <div>No data available</div>;
+  }
+
   return (
     <>
-      <Card title="Total Profit" value={5} type="collected" />
-      <Card title="Total Segments" value={10} type="pending" />
-      <Card title="Paid Tickets" value={100} type="invoices" />
-      <Card title="Unpaid Tickets" value={100} type="customers" />
+      <Card title="Total Profit" value={data?.totalProfit} type="collected" />
+      <Card
+        title="Total Segments"
+        value={data?.totalSegments}
+        type="collected"
+      />
+      <Card
+        title="Total Operations"
+        value={data?.totalOperations}
+        type="pending"
+      />
+      <Card
+        title="Paid Tickets"
+        value={data?.totalPaidTickets}
+        type="invoices"
+      />
+      <Card
+        title="Unpaid Tickets"
+        value={data?.totalUnpaidTickets}
+        type="customers"
+      />
     </>
   );
 }
@@ -50,17 +92,5 @@ export function Card({
         <div>{Icon ? <Icon className="h-10 w-10 text-gray-700" /> : null}</div>
       </div>
     </div>
-    // <div className="rounded-xl bg-gray-100 p-2 shadow-sm">
-    //   <div className="flex p-4">
-    //     {Icon ? <Icon className="h-5 w-5 text-gray-700" /> : null}
-    //     <h3 className="ml-2 text-sm font-medium">{title}</h3>
-    //   </div>
-    //   <p
-    //     className={`${lusitana.className}
-    //       truncate rounded-xl bg-white px-4 py-8 text-center text-2xl`}
-    //   >
-    //     {value}
-    //   </p>
-    // </div>
   );
 }

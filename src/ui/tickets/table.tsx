@@ -14,6 +14,7 @@ export default function TicketsTable({
   maxAmount,
   agent,
   provider,
+  airlineCode,
 }: {
   query: string;
   currentPage: number;
@@ -23,6 +24,7 @@ export default function TicketsTable({
   maxAmount?: string;
   agent?: string;
   provider?: string;
+  airlineCode?: string;
 }) {
   const { data, isLoading, error } = useGetTicketsQuery({
     page: currentPage,
@@ -34,6 +36,7 @@ export default function TicketsTable({
     maxAmount,
     agent,
     provider,
+    airlineCode,
   });
 
   if (isLoading)

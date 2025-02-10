@@ -118,7 +118,7 @@ export default function PaymentMethodsTable({
             <tbody className="bg-white">
               {data?.paymentMethodDropdown?.map((paymentMethod: any) => (
                 <tr
-                  key={paymentMethod?.id}
+                  key={paymentMethod?._id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">

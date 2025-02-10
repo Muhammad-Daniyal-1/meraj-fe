@@ -22,6 +22,7 @@ export default async function Page(props: {
     maxAmount?: string;
     agent?: string;
     provider?: string;
+    airlineCode?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
@@ -33,6 +34,7 @@ export default async function Page(props: {
   const maxAmount = searchParams?.maxAmount || "";
   const agent = searchParams?.agent || "";
   const provider = searchParams?.provider || "";
+  const airlineCode = searchParams?.airlineCode || "";
 
   return (
     <div className="w-full">
@@ -41,7 +43,6 @@ export default async function Page(props: {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <TicketSearch />
-        {/* <Search placeholder="Search tickets..." /> */}
       </div>
       <Table
         query={query}
@@ -52,6 +53,7 @@ export default async function Page(props: {
         maxAmount={maxAmount}
         agent={agent}
         provider={provider}
+        airlineCode={airlineCode}
       />
     </div>
   );

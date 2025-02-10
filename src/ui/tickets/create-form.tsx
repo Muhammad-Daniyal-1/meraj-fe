@@ -14,13 +14,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useGetProvidersQuery } from "@/lib/api/providerApi";
 import { useGetAgentsQuery } from "@/lib/api/agentApi";
-import {
-  operationTypes,
-  paymentTypes,
-  segments,
-  clientPaymentMethods,
-  airlineCode,
-} from "./data";
+import { useGetPaymentMethodsQuery } from "@/lib/api/paymentMethodDropdownApi";
+import { operationTypes, paymentTypes, segments, airlineCode } from "./data";
 
 export default function CreateTicketForm() {
   const router = useRouter();
@@ -59,6 +54,12 @@ export default function CreateTicketForm() {
     search: agentSearch,
   });
 
+  const { data: paymentMethodsData } = useGetPaymentMethodsQuery({
+    page: 1,
+    limit: 50,
+    search: "",
+  });
+
   const providersOptions = Array.isArray(providerData?.providers)
     ? providerData.providers.map((provider: any) => ({
         label: provider.id,
@@ -71,6 +72,36 @@ export default function CreateTicketForm() {
         label: agent.id,
         value: agent._id,
       }))
+    : [];
+
+  console.log({ paymentMethodsData });
+
+  const clientPaymentMethodsOptions = Array.isArray(
+    paymentMethodsData?.paymentMethodDropdown
+  )
+    ? paymentMethodsData.paymentMethodDropdown
+        .filter(
+          (paymentMethod: any) =>
+            paymentMethod.methodFor === "Client Payment Method"
+        )
+        .map((paymentMethod: any) => ({
+          label: paymentMethod.name,
+          value: paymentMethod._id,
+        }))
+    : [];
+
+  const providerPaymentMethodsOptions = Array.isArray(
+    paymentMethodsData?.paymentMethodDropdown
+  )
+    ? paymentMethodsData.paymentMethodDropdown
+        .filter(
+          (paymentMethod: any) =>
+            paymentMethod.methodFor === "Provider Payment Method"
+        )
+        .map((paymentMethod: any) => ({
+          label: paymentMethod.name,
+          value: paymentMethod._id,
+        }))
     : [];
 
   const segmentsOptions = Array.isArray(segments)
@@ -117,13 +148,22 @@ export default function CreateTicketForm() {
 
   const handleProviderSearch = useDebouncedCallback((inputValue) => {
     setProviderSearch(inputValue);
-    // refetchProviders();
   }, 300);
 
   const handleAgentSearch = useDebouncedCallback((inputValue) => {
     setAgentSearch(inputValue);
-    // refetchAgents();
   }, 300);
+
+  const onError = (errors: any) => {
+    const errorMessages = Object.values(errors)
+      .map((error: any) => error.message)
+      .filter(Boolean)
+      .join("\n");
+
+    if (errorMessages) {
+      toast.error(errorMessages);
+    }
+  };
 
   const onSubmit = async (data: TicketFormData) => {
     try {
@@ -141,7 +181,7 @@ export default function CreateTicketForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit, onError)}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -641,10 +681,10 @@ export default function CreateTicketForm() {
             </label>
             <Select
               id="clientPaymentMethod"
-              options={clientPaymentMethods}
+              options={clientPaymentMethodsOptions}
               placeholder="Select a payment method"
-              value={clientPaymentMethods.find(
-                (option) => option.value === watch("clientPaymentMethod")
+              value={clientPaymentMethodsOptions.find(
+                (option: any) => option.value === watch("clientPaymentMethod")
               )}
               isClearable
               onChange={async (selectedOption: any) => {
@@ -689,12 +729,19 @@ export default function CreateTicketForm() {
             >
               Payment to Provider
             </label>
-            <input
+            <Select
               id="paymentToProvider"
-              {...register("paymentToProvider")}
-              type="text"
-              placeholder="e.g. Bank Transfer, Cash, etc."
-              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
+              options={providerPaymentMethodsOptions}
+              placeholder="Select a payment method"
+              value={providerPaymentMethodsOptions.find(
+                (option: any) => option.value === watch("paymentToProvider")
+              )}
+              isClearable
+              onChange={async (selectedOption: any) => {
+                const value = selectedOption?.value || ""; // Default to "" if cleared
+                setValue("paymentToProvider", value);
+                await trigger("paymentToProvider");
+              }}
             />
             {errors.paymentToProvider && (
               <p className="mt-2 text-sm text-red-500">
