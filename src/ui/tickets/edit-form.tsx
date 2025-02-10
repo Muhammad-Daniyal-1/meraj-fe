@@ -69,14 +69,14 @@ export default function EditTicketForm({ id }: { id: string }) {
 
   const providersOptions = Array.isArray(providerData?.providers)
     ? providerData.providers.map((provider: any) => ({
-        label: provider.name,
+        label: provider.id,
         value: provider._id,
       }))
     : [];
 
   const agentsOptions = Array.isArray(agentData?.agents)
     ? agentData.agents.map((agent: any) => ({
-        label: agent.name,
+        label: agent.id,
         value: agent._id,
       }))
     : [];
@@ -118,11 +118,11 @@ export default function EditTicketForm({ id }: { id: string }) {
       // Set initial select values
       setSelectedProvider({
         value: data?.ticket?.provider?._id,
-        label: data?.ticket?.provider?.name,
+        label: data?.ticket?.provider?.id,
       });
       setSelectedAgent({
         value: data?.ticket?.agent?._id,
-        label: data?.ticket?.agent?.name,
+        label: data?.ticket?.agent?.id,
       });
       setSelectedOperationType(
         operationTypes.find((type) => type.value === data.ticket.operationType)

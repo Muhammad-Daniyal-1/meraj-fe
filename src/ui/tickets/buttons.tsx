@@ -72,3 +72,64 @@ export function ReIssueTicket({ id }: { id: string }) {
     </Link>
   );
 }
+
+export function DownloadReceiptButton({ id }: { id: string }) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDownload = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `http://localhost:5001/api/v1/tickets/download-receipt/${id}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Download failed");
+      }
+
+      // Parse the JSON response containing the Base64 PDF and filename
+      const { pdf, filename } = await response.json();
+
+      // Decode the Base64 string to binary data
+      const byteCharacters = atob(pdf);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+
+      // Create a Blob from the binary data
+      const blob = new Blob([byteArray], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+
+      // Create a temporary link to trigger the download
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename || `receipt_${id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleDownload}
+      disabled={isLoading}
+      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+    >
+      {isLoading ? "Downloading..." : "Download Receipt"}
+    </button>
+  );
+}

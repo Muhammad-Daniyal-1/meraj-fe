@@ -2,7 +2,12 @@
 
 import { useGetTicketsQuery } from "@/lib/api/ticketApi";
 import Pagination from "./pagination";
-import { UpdateTicket, DeleteTicket, ReIssueTicket } from "./buttons";
+import {
+  UpdateTicket,
+  DeleteTicket,
+  ReIssueTicket,
+  DownloadReceiptButton,
+} from "./buttons";
 import { formatDateToLocal } from "@/lib/utils";
 
 export default function TicketsTable({
@@ -183,7 +188,8 @@ export default function TicketsTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <ReIssueTicket id={ticket?._id} />
+                      <DownloadReceiptButton id={ticket?._id} />
+                      {/* <ReIssueTicket id={ticket?._id} /> */}
                       <UpdateTicket id={ticket?._id} />
                       <DeleteTicket id={ticket?._id} />
                     </div>
