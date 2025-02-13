@@ -129,12 +129,12 @@ export default function UsersTable({
                       className={clsx(
                         "inline-flex items-center rounded-full px-2 py-1 text-xs",
                         {
-                          "bg-green-500 text-white": user.status,
-                          "bg-red-500 text-white": !user.status,
+                          "bg-green-500 text-white": user.isActive,
+                          "bg-red-500 text-white": !user.isActive,
                         }
                       )}
                     >
-                      {user.status ? "Active" : "Blocked"}
+                      {user.isActive ? "Active" : "Blocked"}
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 w-1/2">

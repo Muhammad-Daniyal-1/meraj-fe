@@ -29,16 +29,14 @@ export default function LoginForm() {
 
   const isFormValid = !!watchedUsername && !!watchedPassword;
 
-  console.log({ isLoading });
-
   const onSubmit = async (data: LoginFormData) => {
     try {
       await login(data).unwrap();
       toast.success("Login successful");
+      reset();
       router.push("/dashboard");
     } catch (err: any) {
       toast.error(err.data.error || "Login failed");
-      console.error("Error logging in:", err);
     }
   };
 

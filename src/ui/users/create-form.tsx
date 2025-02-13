@@ -139,7 +139,7 @@ export default function UserForm() {
             <div className="flex gap-4">
               <label className="flex items-center gap-2">
                 <input
-                  {...register("status")}
+                  {...register("isActive")}
                   type="radio"
                   value="true"
                   defaultChecked
@@ -149,7 +149,7 @@ export default function UserForm() {
               </label>
               <label className="flex items-center gap-2">
                 <input
-                  {...register("status")}
+                  {...register("isActive")}
                   type="radio"
                   value="false"
                   className="w-4 h-4"
@@ -157,9 +157,9 @@ export default function UserForm() {
                 Block
               </label>
             </div>
-            {errors.status && (
+            {errors.isActive && (
               <p className="mt-2 text-sm text-red-500">
-                {errors.status.message}
+                {errors.isActive.message}
               </p>
             )}
           </div>

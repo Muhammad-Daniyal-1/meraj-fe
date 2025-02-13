@@ -51,7 +51,7 @@ export default function UserEditForm({ id }: { id: string }) {
         password: "",
         role: data.user.role || "User",
         // @ts-ignore
-        status: data?.user.status === true ? "true" : "false",
+        isActive: data?.user.isActive === true ? "true" : "false",
         permissions: data?.user.permissions || [],
       });
     }
@@ -161,7 +161,7 @@ export default function UserEditForm({ id }: { id: string }) {
             <div className="flex gap-4">
               <label className="flex items-center gap-2">
                 <input
-                  {...register("status")}
+                  {...register("isActive")}
                   type="radio"
                   value="true"
                   className="w-4 h-4"
@@ -170,7 +170,7 @@ export default function UserEditForm({ id }: { id: string }) {
               </label>
               <label className="flex items-center gap-2">
                 <input
-                  {...register("status")}
+                  {...register("isActive")}
                   type="radio"
                   value="false"
                   className="w-4 h-4"
@@ -178,9 +178,9 @@ export default function UserEditForm({ id }: { id: string }) {
                 Block
               </label>
             </div>
-            {errors.status && (
+            {errors.isActive && (
               <p className="mt-2 text-sm text-red-500">
-                {errors.status.message}
+                {errors.isActive.message}
               </p>
             )}
           </div>

@@ -7,7 +7,7 @@ export const UserSchema = z.object({
   role: z.enum(["Admin", "User"], {
     invalid_type_error: "Invalid role selected.",
   }),
-  status: z.preprocess((value) => value === "true", z.boolean()),
+  isActive: z.preprocess((value) => value === "true", z.boolean()),
   permissions: z
     .array(z.string())
     .min(1, "At least one permission is required."),
