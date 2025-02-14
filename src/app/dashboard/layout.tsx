@@ -1,16 +1,27 @@
-import SideNav from "@/ui/dashboard/sidenav";
-import { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: {
-    template: "%s | Meraj",
-    default: "Dashboard",
-  },
-  description: "The official Next.js Learn Dashboard built with App Router.",
-  metadataBase: new URL("https://next-learn-dashboard.vercel.sh"),
-};
+import SideNav from "@/ui/dashboard/sidenav";
+import { useGetUserQuery } from "@/lib/api/userApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/lib/features/auth/authSlice";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { data: userData, error } = useGetUserQuery("me");
+
+  useEffect(() => {
+    if (userData?.user) {
+      dispatch(setUser(userData.user));
+    }
+
+    if (error) {
+      router.push("/");
+    }
+  }, [userData, error, dispatch, router]);
+
   return (
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
       <div className="w-full flex-none md:w-64">

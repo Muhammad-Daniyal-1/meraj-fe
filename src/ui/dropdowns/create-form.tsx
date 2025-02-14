@@ -14,7 +14,6 @@ import Select from "react-select";
 const paymentTypes = [
   { label: "Card", value: "Card" },
   { label: "Cash", value: "Cash" },
-  { label: "Vocher", value: "Vocher" },
 ];
 
 const paymentMethodsFor = [

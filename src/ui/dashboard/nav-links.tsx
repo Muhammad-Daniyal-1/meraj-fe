@@ -14,25 +14,84 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { usePermissions } from "@/hooks/usePermissions";
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: "Home", href: "/dashboard", icon: HomeIcon },
-  { name: "Tickets", href: "/dashboard/tickets", icon: TicketIcon },
-  { name: "Ledgers", href: "/dashboard/ledgers", icon: DocumentDuplicateIcon },
-  { name: "Payments", href: "/dashboard/payments", icon: CurrencyDollarIcon },
-  { name: "Providers", href: "/dashboard/providers", icon: IdentificationIcon },
-  { name: "Agents", href: "/dashboard/agents", icon: UsersIcon },
-  { name: "Dropdowns", href: "/dashboard/dropdowns", icon: Cog8ToothIcon },
-  { name: "Users", href: "/dashboard/users", icon: UserPlusIcon },
+  { name: "Home", href: "/dashboard", icon: HomeIcon, module: "dashboard" },
+  {
+    name: "Tickets",
+    href: "/dashboard/tickets",
+    icon: TicketIcon,
+    module: "tickets",
+  },
+  {
+    name: "Ledgers",
+    href: "/dashboard/ledgers",
+    icon: DocumentDuplicateIcon,
+    module: "ledgers",
+  },
+  {
+    name: "Payments",
+    href: "/dashboard/payments",
+    icon: CurrencyDollarIcon,
+    module: "payments",
+  },
+  {
+    name: "Providers",
+    href: "/dashboard/providers",
+    icon: IdentificationIcon,
+    module: "providers",
+  },
+  {
+    name: "Agents",
+    href: "/dashboard/agents",
+    icon: UsersIcon,
+    module: "agents",
+  },
+  {
+    name: "Dropdowns",
+    href: "/dashboard/dropdowns",
+    icon: Cog8ToothIcon,
+    module: "dropdowns",
+  },
+  {
+    name: "Users",
+    href: "/dashboard/users",
+    icon: UserPlusIcon,
+    module: "users",
+  },
 ];
 
 export default function NavLinks() {
   const pathname = usePathname();
+  const { canAccessModule, isAdmin, isLoading } = usePermissions();
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="h-[48px] rounded-md bg-gray-200 animate-pulse"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  const filteredLinks = links.filter((link) => {
+    // Always show Home
+    if (link.module === "dashboard") return true;
+    // Show Users only to admin with proper permissions
+    if (link.module === "users") return isAdmin && canAccessModule("users");
+    // For other modules, check permissions
+    return canAccessModule(link.module);
+  });
+
   return (
     <>
-      {links.map((link) => {
+      {filteredLinks.map((link) => {
         const LinkIcon = link.icon;
         return (
           <Link

@@ -18,7 +18,6 @@ import Select from "react-select";
 const paymentTypes = [
   { label: "Card", value: "Card" },
   { label: "Cash", value: "Cash" },
-  { label: "Vocher", value: "Vocher" },
 ];
 
 const paymentMethodsFor = [
@@ -40,8 +39,6 @@ export default function EditPaymentMethodModal({
   const [updatePaymentMethod, { isLoading: isUpdating }] =
     useUpdatePaymentMethodMutation();
 
-  console.log(paymentMethod);
-
   const {
     register,
     handleSubmit,
@@ -55,10 +52,11 @@ export default function EditPaymentMethodModal({
 
   useEffect(() => {
     if (paymentMethod) {
+      console.log(paymentMethod);
       reset({
-        name: paymentMethod?.paymentMethodDropown?.name,
-        type: paymentMethod?.paymentMethodDropown?.type,
-        methodFor: paymentMethod?.paymentMethodDropown?.methodFor,
+        name: paymentMethod?.paymentMethodDropdown?.name,
+        type: paymentMethod?.paymentMethodDropdown?.type,
+        methodFor: paymentMethod?.paymentMethodDropdown?.methodFor,
       });
     }
   }, [paymentMethod, reset]);
@@ -66,11 +64,9 @@ export default function EditPaymentMethodModal({
   const onSubmit = async (data: PaymentMethodDropdownFormData) => {
     try {
       const result = await updatePaymentMethod({ _id: id, ...data }).unwrap();
-      console.log(result);
       toast.success(result?.message || "Payment Method updated successfully!");
       onClose();
     } catch (err: any) {
-      console.log("Error updating payment method:", err);
       toast.error(err?.data?.message || "Failed to update payment method.");
     }
   };
@@ -84,6 +80,8 @@ export default function EditPaymentMethodModal({
     label: method.label,
     value: method.value,
   }));
+
+  if (isFetching) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -100,6 +98,7 @@ export default function EditPaymentMethodModal({
                 id="name"
                 {...register("name")}
                 type="text"
+                defaultValue={paymentMethod?.paymentMethodDropown?.name || ""}
                 className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm placeholder:text-gray-500"
               />
               {errors.name && (

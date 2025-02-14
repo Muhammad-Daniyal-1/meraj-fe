@@ -19,7 +19,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
     getUser: builder.query({
       query: (id) => `/users/get-user/${id}`,
-      providesTags: ["Users"],
+      providesTags: ["Login User"],
     }),
     updateUser: builder.mutation({
       query: (user) => ({
@@ -27,7 +27,7 @@ export const userApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: user,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ["Users", "Login User"],
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
@@ -42,12 +42,14 @@ export const userApi = baseApi.injectEndpoints({
         method: "POST",
         body: user,
       }),
+      invalidatesTags: ["Login User"],
     }),
     logout: builder.mutation({
       query: () => ({
         url: "/users/logout",
         method: "POST",
       }),
+      invalidatesTags: ["Login User"],
     }),
   }),
 });

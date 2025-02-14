@@ -10,9 +10,12 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/lib/features/auth/authSlice";
 
 export default function LoginForm() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -31,8 +34,11 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data).unwrap();
-      toast.success("Login successful");
+      const result = await login(data).unwrap();
+      if (result.success && result.user) {
+        dispatch(setUser(result.user));
+      }
+      toast.success(result?.message || "Login successful");
       reset();
       router.push("/dashboard");
     } catch (err: any) {

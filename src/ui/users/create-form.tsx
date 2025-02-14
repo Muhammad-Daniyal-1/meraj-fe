@@ -1,40 +1,30 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Button } from "@/ui/button";
 import { UserFormData, UserSchema } from "@/lib/schema";
 import { useCreateUserMutation } from "@/lib/api/userApi";
 import { toast } from "react-toastify";
-
-export const permissions = [
-  { label: "Create Ticket", value: "Create Ticket" },
-  { label: "Delete Ticket", value: "Delete Ticket" },
-  { label: "Edit Ticket", value: "Edit Ticket" },
-  { label: "Read Ticket", value: "Read Ticket" },
-  { label: "Create Provider", value: "Create Provider" },
-  { label: "Delete Provider", value: "Delete Provider" },
-  { label: "Edit Provider", value: "Edit Provider" },
-  { label: "Read Provider", value: "Read Provider" },
-  { label: "Create Agent", value: "Create Agent" },
-  { label: "Delete Agent", value: "Delete Agent" },
-  { label: "Edit Agent", value: "Edit Agent" },
-  { label: "Read Agent", value: "Read Agent" },
-  { label: "Create User", value: "Add User" },
-  { label: "Delete User", value: "Delete User" },
-  { label: "Edit User", value: "Edit User" },
-  { label: "Read User", value: "Read User" },
-];
+import Select from "react-select";
+import { permissionsOptions } from "./permissionsOptions";
 
 export default function UserForm() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
+    watch,
+    setValue,
+    clearErrors,
   } = useForm<UserFormData>({
     resolver: zodResolver(UserSchema),
+    defaultValues: {
+      permissions: [],
+    },
   });
 
   const [createUser, { isLoading }] = useCreateUserMutation();
@@ -50,10 +40,14 @@ export default function UserForm() {
     }
   };
 
+  const permissionOptions = permissionsOptions.map((permission) => ({
+    label: permission.label,
+    value: permission.value,
+  }));
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* 2-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Name */}
           <div>
@@ -166,33 +160,36 @@ export default function UserForm() {
 
           {/* Permissions */}
           <div className="md:col-span-2">
-            <label
-              htmlFor="permissions"
-              className="mb-2 block text-sm font-medium"
-            >
+            <label className="mb-2 block text-sm font-medium">
               Permissions
             </label>
-            <select
-              id="permissions"
-              {...register("permissions")}
-              multiple
-              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
-            >
-              {permissions.map((permission) => (
-                <option value={permission.value} key={permission.value}>
-                  {permission.label}
-                </option>
-              ))}
-            </select>
-            <small className="block mt-1 text-gray-500">
-              Hold Ctrl (Cmd on Mac) to select multiple options.
-            </small>
+            <Controller
+              name="permissions"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={permissionOptions}
+                  isMulti
+                  closeMenuOnSelect={false}
+                  tabSelectsValue
+                  value={permissionOptions.filter((option) =>
+                    field.value.includes(option.value)
+                  )}
+                  onChange={(selected) => {
+                    field.onChange(selected.map((option) => option.value));
+                  }}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                />
+              )}
+            />
+            {errors.permissions && (
+              <p className="mt-2 text-sm text-red-500">
+                {errors.permissions.message}
+              </p>
+            )}
           </div>
-          {errors.permissions && (
-            <p className="mt-2 text-sm text-red-500">
-              {errors.permissions.message}
-            </p>
-          )}
         </div>
       </div>
 
