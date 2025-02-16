@@ -196,7 +196,7 @@ export default function UserForm() {
       {/* Form Action Buttons */}
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard"
+          href="/dashboard/users"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel

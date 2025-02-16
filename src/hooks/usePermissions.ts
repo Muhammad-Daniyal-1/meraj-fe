@@ -46,7 +46,7 @@ export const usePermissions = () => {
       deletePaymentMethod: ["Delete Payment Method"],
     };
 
-    const requiredPermissions = permissionMap[module.toLowerCase()];
+    const requiredPermissions = permissionMap[module];
     if (!requiredPermissions) return true; // If no permissions defined, allow access
 
     return requiredPermissions.some((permission) => hasPermission(permission));
